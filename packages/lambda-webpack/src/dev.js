@@ -58,7 +58,9 @@ module.exports = ({
         return
       }
 
-      process.send({ type: 'UPDATE_PORT', port })
+      if (process.send) {
+        process.send({ type: 'UPDATE_PORT', port })
+      }
 
       const compiler = webpack(webpackConfig)
 

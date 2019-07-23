@@ -1,8 +1,9 @@
-const { chokidar } = require('chokidar')
+import chokidar from 'chokidar'
 
+// 按 key 存，值为数组
 const watchers = {}
 
-function watch(key, files) {
+export function watch(key, files) {
   if (process.env.WATCH_FILES === 'none') return
   if (!watchers[key]) {
     watchers[key] = []
@@ -14,7 +15,7 @@ function watch(key, files) {
   return watcher
 }
 
-function unwatch(key) {
+export function unwatch(key) {
   if (!key) {
     return Object.keys(watchers).forEach(unwatch)
   }
@@ -25,5 +26,3 @@ function unwatch(key) {
     delete watchers[key]
   }
 }
-
-module.exports = { watch, unwatch }

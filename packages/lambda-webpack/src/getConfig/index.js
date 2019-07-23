@@ -359,6 +359,8 @@ module.exports = opts => {
         }
       ]
     ])
+  } else {
+    webpackConfig.plugin('html-plugin').use(require('html-webpack-plugin'))
   }
 
   if (opts.copy) {
