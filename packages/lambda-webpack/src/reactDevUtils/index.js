@@ -1,10 +1,21 @@
-const { readdirSync } = require('fs')
-const { resolve } = require('path')
+const clearConsole = require('./clearConsole')
+const choosePort = require('./choosePort')
+const errorOverlayMiddleware = require('./errorOverlayMiddleware')
+const formatWebpackMessages = require('./formatWebpackMessages')
+const patchConnection = require('./patchConnection')
+const prepareUrls = require('./prepareUrls')
+const socket = require('./socket')
+const utils = require('./utils')
+const webpackHotDevClientPath = require.resolve('./webpackHotDevClient')
 
-const reactDevUtils = () =>
-  readdirSync(__dirname).reduce((resolveMap, file) => {
-    resolveMap[file] = require(resolve(file))
-    return resolveMap
-  }, {})
-
-module.exports = reactDevUtils()
+module.exports = {
+  clearConsole,
+  choosePort,
+  errorOverlayMiddleware,
+  formatWebpackMessages,
+  patchConnection,
+  prepareUrls,
+  socket,
+  utils,
+  webpackHotDevClientPath
+}

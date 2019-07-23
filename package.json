@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "lint": "lerna run lint",
+    "dev": "npm run build && lerna run dev",
     "build": "father-build",
     "test": "nyc ava",
     "changelog": "lerna-changelog",

@@ -11,13 +11,13 @@ const webpackConfig = getWebpackConfig()
 
 switch (process.argv[2]) {
   case 'dev':
-    require(`${internal}/dev`).default({
+    require(`${internal}/dev`)({
       cwd,
       webpackConfig
     })
     break
   case 'build':
-    require(`${internal}/build`).default({
+    require(`${internal}/build`)({
       cwd,
       webpackConfig
     })
@@ -27,11 +27,11 @@ switch (process.argv[2]) {
 }
 
 function getWebpackConfig() {
-  const { config: userConfig } = getUserConfig.default({
+  const { config: userConfig } = getUserConfig({
     cwd,
     configFile: process.env.CONFIG_FILE || '.webpackrc'
   })
-  return getConfig.default({
+  return getConfig({
     entry: {
       index: './index.js'
     },

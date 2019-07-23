@@ -1,4 +1,4 @@
-const debug = require('debug')('af-webpack:send')
+const debug = require('debug')('lambda-webpack:send')
 
 exports.DONE = 'DONE'
 exports.STARTING = 'STARTING'

@@ -3,9 +3,9 @@ export default {
   cjs: { type: 'babel' },
   browserFiles: [
     'src/reactDevUtils/webpackHotDevClient.js',
-    'src/utils.js',
-    'src/formatWebpackMessages.js',
-    'src/socket.js',
-    'src/patchConnection.js'
+    'src/reactDevUtils/utils.js',
+    'src/reactDevUtils/formatWebpackMessages.js',
+    'src/reactDevUtils/socket.js',
+    'src/reactDevUtils/patchConnection.js'
   ]
 }

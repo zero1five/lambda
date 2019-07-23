@@ -96,7 +96,7 @@ module.exports = opts => {
   const DEFAULT_INLINE_LIMIT = 10000
   const rule = webpackConfig.module
     .rule('exclude')
-    .add(/\.json$/)
+    .exclude.add(/\.json$/)
     .add(/\.(js|jsx|ts|tsx|mjs|wasm)$/)
     .add(/\.(graphql|gql)$/)
     .add(/\.(css|less|scss|sass)$/)
@@ -121,7 +121,7 @@ module.exports = opts => {
     babelrc: !!process.env.BABELRC,
     customize: require.resolve('babel-preset-umi/lib/webpack-overrides')
   }
-  const { babel = {} } = opts.babel
+  const babel = opts.babel || {}
   const babelOpts = {
     presets: [...(babel.presets || []), ...(opts.extraBabelPresets || [])],
     plugins: [
