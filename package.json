@@ -3,10 +3,12 @@
   "private": true,
   "scripts": {
     "lint": "lerna run lint",
+    "build": "father-build",
     "test": "nyc ava",
     "changelog": "lerna-changelog",
     "release": "release-it --no-git.requireCleanWorkingDir",
-    "bootstrap": "lerna bootstrap"
+    "bootstrap": "lerna bootstrap",
+    "publish": "lerna run build && lerna publish"
   },
   "dependencies": {},
   "devDependencies": {
@@ -30,6 +32,7 @@
     "eslint-plugin-node-core": "^1.0.0",
     "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-react": "^7.14.2",
+    "father-build": "^1.3.4",
     "husky": "^1.3.1",
     "lerna": "^3.8.0",
     "lint-staged": "^8.1.0",

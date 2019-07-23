@@ -5,7 +5,8 @@
   "bin": "./bin/index.js",
   "files": [
     "src",
-    "bin"
+    "bin",
+    "lib"
   ],
   "keywords": [],
   "scripts": {

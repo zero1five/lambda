@@ -1,22 +1,23 @@
 #!/usr/bin/env node
 
+const internal = '../lib'
 // 获取默认配置
-const getConfig = require('../src/getConfig')
+const getConfig = require(`${internal}/getConfig`)
 // 获取用户配置
-const getUserConfig = require('../src/getUserConfig')
+const getUserConfig = require(`${internal}/getUserConfig`)
 
 const cwd = process.cwd()
 const webpackConfig = getWebpackConfig()
 
 switch (process.argv[2]) {
   case 'dev':
-    require('../dev').default({
+    require(`${internal}/dev`).default({
       cwd,
       webpackConfig
     })
     break
   case 'build':
-    require('../build').default({
+    require(`${internal}/build`).default({
       cwd,
       webpackConfig
     })
