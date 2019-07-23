@@ -8,7 +8,7 @@
     "changelog": "lerna-changelog",
     "release": "release-it --no-git.requireCleanWorkingDir",
     "bootstrap": "lerna bootstrap",
-    "publish": "lerna run build && lerna publish"
+    "publish": "lerna run build && lerna publish --message='workflow: lerna publish new version'"
   },
   "dependencies": {},
   "devDependencies": {
@@ -51,5 +51,6 @@
       "pre-commit": "lint-staged",
       "commit-msg": "node ./scripts/commit-lint.js"
     }
-  }
+  },
+  "publishConfig": {}
 }
