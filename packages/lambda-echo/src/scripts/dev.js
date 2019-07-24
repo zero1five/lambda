@@ -1,4 +1,4 @@
-import fork from 'umi-build-dev/lib/fork'
+import fork from 'lambda-service/lib/fork'
 
 const child = fork(require.resolve('./realDev.js'))
 child.on('message', data => {

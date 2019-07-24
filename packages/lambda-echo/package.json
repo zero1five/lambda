@@ -1,6 +1,6 @@
 {
   "name": "lambda-echo",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "bin": {
@@ -21,7 +21,7 @@
     "semver": "6.1.1",
     "signale": "1.4.0",
     "umi-utils": "1.5.3",
-    "lambda-webpack": "0.0.1",
+    "lambda-service": "0.0.1",
     "update-notifier": "3.0.0",
     "yargs-parser": "13.1.1"
   },
@@ -30,5 +30,32 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "files": [
+    "dist",
+    "lib",
+    "src",
+    "bin",
+    "_runtimePlugin.js",
+    "babel.js",
+    "dynamic.d.ts",
+    "dynamic.js",
+    "index.js",
+    "index.d.ts",
+    "link.d.ts",
+    "link.js",
+    "navlink.d.ts",
+    "navlink.js",
+    "prompt.d.ts",
+    "prompt.js",
+    "redirect.d.ts",
+    "redirect.js",
+    "Route.d.ts",
+    "Route.js",
+    "router.d.ts",
+    "router.js",
+    "routerTypes.d.ts",
+    "withRouter.d.ts",
+    "withRouter.js"
+  ]
 }

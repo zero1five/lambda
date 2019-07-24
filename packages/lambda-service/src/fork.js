@@ -1,1 +1,1 @@
-export default from 'af-webpack/lib/fork'
+export default from 'lambda-webpack/lib/fork'
