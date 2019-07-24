@@ -9,5 +9,5 @@ if (args.mode === 'production') {
   process.env.NODE_ENV = 'development'
 }
 
-const Service = require('umi-build-dev/lib/Service').default
+const Service = require('lambda-service/lib/Service').default
 new Service(buildDevOpts(args)).run('inspect', args)

@@ -1,4 +1,4 @@
-export default function registerBabel(opts = {}) {
+module.exports = function registerBabel(opts = {}) {
   const { only, ignore, babelPreset, babelPlugins, disablePreventTest } = opts
   if (disablePreventTest || process.env.NODE_ENV !== 'test') {
     require('@babel/register')({
