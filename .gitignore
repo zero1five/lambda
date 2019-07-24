@@ -8,3 +8,4 @@ coverage
 dist
 /packages/lambda-playground
 /packages/**/lib
+!/packages/**/errorCodeMap/lib

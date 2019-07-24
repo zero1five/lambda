@@ -1,4 +1,4 @@
-import fork from 'lambda-service/lib/fork'
+import { fork } from 'lambda-service'
 
 const child = fork(require.resolve('./realDev.js'))
 child.on('message', data => {

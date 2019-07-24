@@ -2,10 +2,14 @@
   "name": "lambda-service",
   "version": "0.0.1",
   "description": "",
+  "main": "./index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "dependencies": {},
+  "dependencies": {
+    "chalk": "2.4.2",
+    "lambda-core": "^0.0.1"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

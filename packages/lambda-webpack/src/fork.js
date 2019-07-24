@@ -4,7 +4,7 @@ import send, { RESTART } from './send'
 const usedPorts = []
 let CURRENT_PORT = undefined
 
-export default function start(scriptPath) {
+module.exports = function start(scriptPath) {
   const execArgv = process.execArgv.slice(0)
   const inspectArgvIndex = execArgv.findIndex(argv =>
     argv.includes('--inspect-brk')
