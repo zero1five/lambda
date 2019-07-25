@@ -91,7 +91,7 @@ export default function(api) {
           .then(() => {
             debug('start dev server with af-webpack/dev')
             const { history = 'browser' } = service.config
-            require('af-webpack/dev').default({
+            require('lambda-webpack/lib/dev')({
               cwd,
               port,
               history: typeof history === 'string' ? history : history[0],

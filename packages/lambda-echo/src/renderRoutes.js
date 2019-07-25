@@ -131,7 +131,7 @@ export default function renderRoutes(
   extraProps = {},
   switchProps = {}
 ) {
-  const plugins = require('umi/_runtimePlugin')
+  const plugins = require('lambda-echo/_runtimePlugin')
   return routes ? (
     <Switch {...switchProps}>
       {routes.map((route, i) => {

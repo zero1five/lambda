@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React from 'react'
-import Link from 'umi/link'
-import withRouter from 'umi/withRouter'
+import Link from 'lambda-echo/link'
+import withRouter from 'lambda-echo/withRouter'
 import 'whatwg-fetch'
 import guessJSFileFromPath from './guessJSFileFromPath'
 import styles from './NotFound.less'

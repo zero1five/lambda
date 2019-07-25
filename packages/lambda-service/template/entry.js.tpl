@@ -9,7 +9,7 @@ import findRoute from '{{{ findRoutePath }}}';
 {{{ imports }}}
 
 // runtime plugins
-const plugins = require('umi/_runtimePlugin');
+const plugins = require('lambda-echo/_runtimePlugin');
 {{#globalVariables}}
 window.g_plugins = plugins;
 {{/globalVariables}}
