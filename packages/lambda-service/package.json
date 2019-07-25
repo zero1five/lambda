@@ -7,8 +7,11 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "@lambda/core": "^0.0.1",
+    "@lambda/utils": "^1.0.0",
     "chalk": "2.4.2",
-    "lambda-core": "^0.0.1"
+    "chokidar": "3.0.2",
+    "resolve": "1.11.0"
   },
   "keywords": [],
   "author": "",

@@ -11,7 +11,7 @@ import getUserConfig, {
   cleanConfigRequireCache
 } from 'lambda-core/lib/getUserConfig'
 import { watch, unwatch } from './getConfig/watch'
-import isEqual from './isEqual'
+import { isEqual } from './utils'
 
 export default class UserConfig {
   static getConfig(opts = {}) {

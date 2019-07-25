@@ -6,10 +6,11 @@ import mkdirp from 'mkdirp'
 import { assign, cloneDeep } from 'lodash'
 import { parse } from 'dotenv'
 import signale from 'signale'
-import { LambdaError, printLambdaError } from 'lambda-core'
+import { LambdaError, printLambdaError } from '@lambda/core'
 
 // import getPaths from './getPaths'
 import UserConfig from './UserConfig'
+import getPlugins from './getPlugins'
 // import registerBabel from './registerBabel'
 
 const debug = require('debug')('lambda-service:Service')
@@ -49,6 +50,7 @@ export default class Service {
     // this.paths = getPaths(this)
   }
 
+  // 初始化
   init() {
     // 加载 Env
     this.loadEnv()
@@ -75,6 +77,7 @@ export default class Service {
     debug(this.paths)
   }
 
+  // 调用初始化和调用command plugins
   run(name = 'help', args) {
     this.init()
     return this.runCommand(name, args)
@@ -130,5 +133,27 @@ export default class Service {
         throw e
       }
     }, opts.initialValue)
+  }
+
+  resolvePlugins() {
+    try {
+      assert(
+        Array.isArray(this.config.plugins || []),
+        `Configure item ${chalk.underline.cyan(
+          'plugins'
+        )} should be Array, but got ${chalk.red(typeof this.config.plugins)}`
+      )
+      return getPlugins({
+        cwd: winPath(this.cwd),
+        plugins: this.config.plugins
+      })
+    } catch (e) {
+      if (process.env.UMI_TEST) {
+        throw new Error(e)
+      } else {
+        this.printLambdaError(e)
+        process.exit(1)
+      }
+    }
   }
 }

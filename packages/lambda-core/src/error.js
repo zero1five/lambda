@@ -35,7 +35,7 @@ class LambdaError extends Error {
 }
 
 function printLambdaError(e, opts = {}) {
-  if (!(e instanceof UmiError)) {
+  if (!(e instanceof LambdaError)) {
     signale.error(e)
     return
   }
