@@ -9,35 +9,11 @@ import { getCodeFrame, isEqual } from './utils'
 
 const debug = require('debug')('lambda-service:getPlugin')
 
-export default function(opt = {}) {
+export default function(opts = {}) {
   const { cwd, plugins = [] } = opts
 
   // 内置插件
-  const builtInPlugins = [
-    './plugins/commands/dev',
-    './plugins/commands/build',
-    './plugins/commands/inspect',
-    './plugins/commands/test',
-    './plugins/commands/help',
-    './plugins/commands/generate',
-    './plugins/commands/rm',
-    './plugins/commands/config',
-    './plugins/commands/block',
-    // './plugins/commands/ui',
-    './plugins/commands/version',
-    './plugins/global-js',
-    './plugins/global-css',
-    './plugins/base',
-    './plugins/mountElementId',
-    './plugins/mock',
-    './plugins/proxy',
-    './plugins/history',
-    './plugins/afwebpack-config',
-    './plugins/mountElementId',
-    './plugins/404', // 404 must after mock
-    './plugins/targets',
-    './plugins/importFromUmi'
-  ]
+  const builtInPlugins = ['./plugins/commands/dev']
 
   const pluginsObj = [
     ...builtInPlugins.map(p => {

@@ -22,7 +22,7 @@ function hasCodeFrame(stack) {
   return stack.includes('^') && stack.includes('>')
 }
 
-export default function({ stack, message }, options = {}) {
+export function getCodeFrame({ stack, message }, options = {}) {
   const { codeFrame = {}, cwd } = options
   if (hasCodeFrame(stack)) {
     return message
