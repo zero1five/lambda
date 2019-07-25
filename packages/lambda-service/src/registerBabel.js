@@ -1,6 +1,6 @@
 import { join, isAbsolute } from 'path'
 import { existsSync } from 'fs'
-import registerBabel from 'lambda-webpack'
+import { registerBabel } from 'lambda-webpack'
 import { winPath } from '@lambda/utils'
 import { getConfigPaths } from '@lambda/core/lib/getUserConfig'
 

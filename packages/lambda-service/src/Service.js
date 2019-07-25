@@ -10,10 +10,10 @@ import { LambdaError, printLambdaError } from '@lambda/core'
 import { winPath } from '@lambda/utils'
 
 import PluginAPI from './PluginAPI'
-// import getPaths from './getPaths'
+import getPaths from './getPaths'
 import UserConfig from './UserConfig'
 import getPlugins from './getPlugins'
-// import registerBabel from './registerBabel'
+import registerBabel from './registerBabel'
 import { getCodeFrame } from './utils'
 
 const debug = require('debug')('lambda-service:Service')
@@ -28,9 +28,9 @@ export default class Service {
       this.pkg = {}
     }
 
-    // registerBabel({
-    //   cwd: this.cwd
-    // })
+    registerBabel({
+      cwd: this.cwd
+    })
 
     this.commands = {}
     this.pluginHooks = {}
@@ -50,7 +50,7 @@ export default class Service {
     this.extraPlugins = []
     debug(`plugins: ${this.plugins.map(p => p.id).join(' | ')}`)
 
-    // this.paths = getPaths(this)
+    this.paths = getPaths(this)
   }
 
   // 初始化
@@ -253,6 +253,21 @@ ${getCodeFrame(e, { cwd: this.cwd })}
     }, opts.initialValue)
   }
 
+  async _applyPluginsAsync(key, opts = {}) {
+    debug(`apply plugins async ${key}`)
+    const hooks = this.pluginHooks[key] || []
+    let memo = opts.initialValue
+    for (const hook of hooks) {
+      const { fn } = hook
+      // eslint-disable-next-line no-await-in-loop
+      memo = await fn({
+        memo,
+        args: opts.args
+      })
+    }
+    return memo
+  }
+
   // 解析插件
   resolvePlugins() {
     try {
@@ -307,6 +322,25 @@ ${getCodeFrame(e, { cwd: this.cwd })}
       `Command ${name} exists, please select another one.`
     )
     this.commands[name] = { fn, opts }
+  }
+
+  writeTmpFile(file, content) {
+    const { paths } = this
+    const path = join(paths.absTmpDirPath, file)
+    mkdirp.sync(dirname(path))
+    writeFileSync(path, content, 'utf-8')
+  }
+
+  changePluginOption(id, newOpts) {
+    assert(id, `id must supplied`)
+    const plugin = this.plugins.filter(p => p.id === id)[0]
+    assert(plugin, `plugin ${id} not found`)
+    plugin.opts = newOpts
+    if (plugin.onOptionChange) {
+      plugin.onOptionChange(newOpts)
+    } else {
+      this.restart(`plugin ${id}'s option changed`)
+    }
   }
 }
 

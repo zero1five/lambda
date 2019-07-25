@@ -11,10 +11,6 @@ function makeArray(item) {
   return [item]
 }
 
-function consoleError(key) {
-  console.error(`Missing ${key} attribute`)
-}
-
 module.exports = opts => {
   const { cwd } = opts || {}
   // 通过env变量判断是否是dev模式
@@ -33,8 +29,6 @@ module.exports = opts => {
         entry.add(file)
       })
     }
-  } else {
-    consoleError('entry')
   }
 
   // 配置 output

@@ -38,7 +38,7 @@ switch (script) {
     require(`./scripts/${script}`)
     break
   default: {
-    const Service = require('umi-build-dev/lib/Service').default
+    const Service = require('lambda-service/lib/Service').default
     new Service(buildDevOpts(args)).run(aliasMap[script] || script, args)
     break
   }

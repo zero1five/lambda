@@ -7,7 +7,7 @@ import getRouteConfigFromConfig from './getRouteConfigFromConfig'
 
 export default (paths, config = {}, onPatchRoute) => {
   let routes = null
-  console.log(paths)
+
   const routeConfigFile = join(paths.absSrcPath, '_routes.json')
   if (config.routes) {
     routes = getRouteConfigFromConfig(config.routes, paths.pagesPath)
