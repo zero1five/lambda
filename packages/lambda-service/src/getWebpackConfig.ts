@@ -1,4 +1,4 @@
-import { getConfig } from 'lambda-webpack'
+import getConfig from 'af-webpack/getConfig'
 import assert from 'assert'
 import chalk from 'chalk'
 import { IExportSSROpts } from 'umi-types/config'

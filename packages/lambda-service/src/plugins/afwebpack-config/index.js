@@ -1,7 +1,7 @@
-import { getUserConfigPlugins } from 'lambda-webpack'
+import getUserConfigPlugins from 'af-webpack/getUserConfigPlugins'
 import { compatDirname } from 'umi-utils'
 import { join, dirname } from 'path'
-import { webpackHotDevClientPath } from 'lambda-webpack/react-dev-utils'
+import { webpackHotDevClientPath } from 'af-webpack/react-dev-utils'
 
 const plugins = getUserConfigPlugins()
 

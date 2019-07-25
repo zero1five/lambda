@@ -1,13 +1,14 @@
 import resolve from 'resolve'
 import assert from 'assert'
 import chalk from 'chalk'
-import { LambdaError } from '@lambda/core'
-import { winPath } from '@lambda/utils'
+import { UmiError } from 'umi-core/lib/error'
+import { winPath } from 'umi-utils'
 
 import registerBabel, { addBabelRegisterFiles } from './registerBabel'
-import { getCodeFrame, isEqual } from './utils'
+import isEqual from './isEqual'
+import getCodeFrame from './utils/getCodeFrame'
 
-const debug = require('debug')('lambda-service:getPlugin')
+const debug = require('debug')('umi-build-dev:getPlugin')
 
 export default function(opts = {}) {
   const { cwd, plugins = [] } = opts
@@ -40,6 +41,7 @@ export default function(opts = {}) {
   ]
 
   const pluginsObj = [
+    // builtIn 的在最前面
     ...builtInPlugins.map(p => {
       let opts
       if (Array.isArray(p)) {
@@ -86,7 +88,7 @@ function pluginToPath(plugins, { cwd }) {
         opts
       ]
     } catch (e) {
-      throw new LambdaError({
+      throw new UmiError({
         code: 'ERR_CORE_PLUGIN_RESOLVE_FAILED',
         message: `Plugin ${chalk.underline.cyan(path)} can't be resolved`
       })
@@ -111,7 +113,7 @@ function getUserPlugins(plugins, { cwd }) {
     try {
       apply = require(path) // eslint-disable-line
     } catch (e) {
-      throw new LambdaError({
+      throw new UmiError({
         code: 'ERR_CORE_PLUGIN_INITIALIZE_FAILED',
         message: `Plugin ${chalk.cyan.underline(
           path
@@ -134,6 +136,11 @@ function toIdStr(plugins) {
   return plugins.map(p => p.id).join('^^')
 }
 
+/**
+ * 返回结果：
+ *   pluginsChanged: true | false
+ *   optionChanged: [ 'a', 'b' ]
+ */
 export function diffPlugins(newOption, oldOption, { cwd }) {
   const newPlugins = getUserPlugins(newOption, { cwd }).map(resolveIdAndOpts)
   const oldPlugins = getUserPlugins(oldOption, { cwd }).map(resolveIdAndOpts)

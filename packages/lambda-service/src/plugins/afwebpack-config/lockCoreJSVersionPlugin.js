@@ -1,5 +1,5 @@
 import { dirname } from 'path'
-import { winPath } from '@lambda/utils'
+import { winPath } from 'umi-utils'
 
 const coreJSPath = dirname(require.resolve('core-js/package.json'))
 

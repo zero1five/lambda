@@ -9,14 +9,13 @@ import getUserConfig, {
   getConfigFile,
   getConfigByConfigFile,
   cleanConfigRequireCache
-} from 'lambda-core/lib/getUserConfig'
+} from 'umi-core/lib/getUserConfig'
 import { watch, unwatch } from './getConfig/watch'
-import { isEqual } from './utils'
+import isEqual from './isEqual'
 
-export default class UserConfig {
+class UserConfig {
   static getConfig(opts = {}) {
     const { cwd, service } = opts
-
     return getUserConfig({
       cwd,
       defaultConfig: service.applyPlugins('modifyDefaultConfig', {
@@ -190,3 +189,5 @@ export default class UserConfig {
     }
   }
 }
+
+export default UserConfig

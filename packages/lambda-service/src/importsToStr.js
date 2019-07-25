@@ -1,4 +1,4 @@
-import { winPath } from '@lambda/utils'
+import { winPath } from 'umi-utils'
 
 export default function(imports) {
   return imports.map(imp => {

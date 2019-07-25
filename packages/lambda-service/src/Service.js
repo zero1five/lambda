@@ -6,24 +6,24 @@ import mkdirp from 'mkdirp'
 import { assign, cloneDeep } from 'lodash'
 import { parse } from 'dotenv'
 import signale from 'signale'
-import { LambdaError, printLambdaError } from '@lambda/core'
-import { winPath } from '@lambda/utils'
-
-import PluginAPI from './PluginAPI'
+import { deprecate, winPath } from 'umi-utils'
+import { UmiError, printUmiError } from 'umi-core/lib/error'
 import getPaths from './getPaths'
-import UserConfig from './UserConfig'
 import getPlugins from './getPlugins'
+import PluginAPI from './PluginAPI'
+import UserConfig from './UserConfig'
 import registerBabel from './registerBabel'
-import { getCodeFrame } from './utils'
+import getCodeFrame from './utils/getCodeFrame'
 
-const debug = require('debug')('lambda-service:Service')
+const debug = require('debug')('umi-build-dev:Service')
 
 export default class Service {
   constructor({ cwd }) {
+    //  用户传入的 cmd 不可信任 转化一下
     this.cwd = cwd || process.cwd()
 
     try {
-      this.pkg = require(join(this.cwd, 'package.json'))
+      this.pkg = require(join(this.cwd, 'package.json')) // eslint-disable-line
     } catch (e) {
       this.pkg = {}
     }
@@ -36,86 +36,57 @@ export default class Service {
     this.pluginHooks = {}
     this.pluginMethods = {}
     this.generators = {}
-    this.LambdaError = LambdaError
-    this.printLambdaError = printLambdaError
+    this.UmiError = UmiError
+    this.printUmiError = printUmiError
 
+    // resolve user config
     this.config = UserConfig.getConfig({
       cwd: this.cwd,
       service: this
     })
-
     debug(`user config: ${JSON.stringify(this.config)}`)
 
+    // resolve plugins
     this.plugins = this.resolvePlugins()
     this.extraPlugins = []
     debug(`plugins: ${this.plugins.map(p => p.id).join(' | ')}`)
 
+    // resolve paths
     this.paths = getPaths(this)
   }
 
-  // 初始化
-  init() {
-    // 加载 Env
-    this.loadEnv()
-
-    // 加载 plugins
-    this.initPlugins()
-
-    const userConfig = new UserConfig(this)
-    const config = userConfig.getConfig({ force: true })
-    mergeConfig(this.config, config)
-    this.userConfig = userConfig
-
-    debug('got user config')
-    debug(this.config)
-
-    // 将用户配置的 output 设置到 Service
-    if (config.outputPath) {
-      const { paths } = this
-      paths.outputPath = config.outputPath
-      paths.absOutputPath = join(paths.cwd, config.outputPath)
-    }
-
-    debug('got paths')
-    debug(this.paths)
+  printUmiError(error, opts) {
+    this.applyPlugins('onPrintUmiError', {
+      args: {
+        error,
+        opts
+      }
+    })
+    printUmiError(error, opts)
   }
 
-  // 初始化插件Set
-  initPlugins() {
-    this.plugins.forEach(plugin => {
-      this.initPlugin(plugin)
-    })
-
-    let count = 0
-    while (this.extraPlugins.length) {
-      const extraPlugins = cloneDeep(this.extraPlugins)
-      this.extraPlugins = []
-      extraPlugins.forEach(plugin => {
-        this.initPlugin(plugin)
-        this.plugins.push(plugin)
-        count += 1
-        assert(count <= 10, `插件注册死循环？`)
+  resolvePlugins() {
+    try {
+      assert(
+        Array.isArray(this.config.plugins || []),
+        `Configure item ${chalk.underline.cyan(
+          'plugins'
+        )} should be Array, but got ${chalk.red(typeof this.config.plugins)}`
+      )
+      return getPlugins({
+        cwd: winPath(this.cwd),
+        plugins: this.config.plugins || []
       })
+    } catch (e) {
+      if (process.env.UMI_TEST) {
+        throw new Error(e)
+      } else {
+        this.printUmiError(e)
+        process.exit(1)
+      }
     }
-
-    // Throw error for methods that can't be called after plugins is initialized
-    this.plugins.forEach(plugin => {
-      ;[
-        'onOptionChange',
-        'register',
-        'registerMethod',
-        'registerPlugin'
-      ].forEach(method => {
-        plugin._api[method] = () => {
-          throw new Error(
-            `api.${method}() should not be called after plugin is initialized.`
-          )
-        }
-      })
-    })
   }
 
-  // 初始化插件
   initPlugin(plugin) {
     const { id, apply, opts } = plugin
     try {
@@ -123,6 +94,7 @@ export default class Service {
         typeof apply === 'function',
         `
 plugin must export a function, e.g.
+
   export default function(api) {
     // Implement functions via api
   }
@@ -185,6 +157,7 @@ plugin must export a function, e.g.
         signale.error(
           `
 Plugin ${chalk.cyan.underline(id)} initialize failed
+
 ${getCodeFrame(e, { cwd: this.cwd })}
         `.trim()
         )
@@ -194,50 +167,52 @@ ${getCodeFrame(e, { cwd: this.cwd })}
     }
   }
 
-  // 调用初始化和调用command plugins
-  run(name = 'help', args) {
-    this.init()
-    return this.runCommand(name, args)
-  }
-
-  runCommand(rawName, rawArgs) {
-    debug(`raw command name: ${rawName}, args: ${JSON.stringify(rawArgs)}`)
-
-    const { name, args } = this.applyPlugins('_modifyCommand', {
-      initialValue: {
-        name: rawName,
-        args: rawArgs
-      }
+  initPlugins() {
+    this.plugins.forEach(plugin => {
+      this.initPlugin(plugin)
     })
 
-    debug(`run ${name} with args ${JSON.stringify(args)}`)
-
-    const command = this.commands[name]
-    if (!command) {
-      signale.error(`Command ${chalk.underline.cyan(name)} does not exists`)
-      process.exit(1)
+    let count = 0
+    while (this.extraPlugins.length) {
+      const extraPlugins = cloneDeep(this.extraPlugins)
+      this.extraPlugins = []
+      extraPlugins.forEach(plugin => {
+        this.initPlugin(plugin)
+        this.plugins.push(plugin)
+      })
+      count += 1
+      assert(count <= 10, `插件注册死循环？`)
     }
 
-    const { fn, opts } = command
-    if (opts.webpack) {
-      // webpack config
-      this.webpackConfig = require('./getWebpackConfig').default(this)
-      if (this.config.ssr) {
-        // when use ssr, push client-manifest plugin into client webpackConfig
-        this.webpackConfig.plugins.push(
-          new (require('./plugins/commands/getChunkMapPlugin').default(this))()
-        )
-        // server webpack config
-        this.ssrWebpackConfig = require('./getWebpackConfig').default(this, {
-          ssr: this.config.ssr
-        })
-      }
-    }
-
-    return fn(args)
+    // Throw error for methods that can't be called after plugins is initialized
+    this.plugins.forEach(plugin => {
+      ;[
+        'onOptionChange',
+        'register',
+        'registerMethod',
+        'registerPlugin'
+      ].forEach(method => {
+        plugin._api[method] = () => {
+          throw new Error(
+            `api.${method}() should not be called after plugin is initialized.`
+          )
+        }
+      })
+    })
   }
 
-  // 应用插件
+  changePluginOption(id, newOpts) {
+    assert(id, `id must supplied`)
+    const plugin = this.plugins.filter(p => p.id === id)[0]
+    assert(plugin, `plugin ${id} not found`)
+    plugin.opts = newOpts
+    if (plugin.onOptionChange) {
+      plugin.onOptionChange(newOpts)
+    } else {
+      this.restart(`plugin ${id}'s option changed`)
+    }
+  }
+
   applyPlugins(key, opts = {}) {
     debug(`apply plugins ${key}`)
     return (this.pluginHooks[key] || []).reduce((memo, { fn }) => {
@@ -268,29 +243,6 @@ ${getCodeFrame(e, { cwd: this.cwd })}
     return memo
   }
 
-  // 解析插件
-  resolvePlugins() {
-    try {
-      assert(
-        Array.isArray(this.config.plugins || []),
-        `Configure item ${chalk.underline.cyan(
-          'plugins'
-        )} should be Array, but got ${chalk.red(typeof this.config.plugins)}`
-      )
-      return getPlugins({
-        cwd: winPath(this.cwd),
-        plugins: this.config.plugins
-      })
-    } catch (e) {
-      if (process.env.UMI_TEST) {
-        throw new Error(e)
-      } else {
-        this.printLambdaError(e)
-        process.exit(1)
-      }
-    }
-  }
-
   loadEnv() {
     const basePath = join(this.cwd, '.env')
     const localPath = `${basePath}.local`
@@ -300,6 +252,7 @@ ${getCodeFrame(e, { cwd: this.cwd })}
         debug(`load env from ${path}`)
         const parsed = parse(readFileSync(path, 'utf-8'))
         Object.keys(parsed).forEach(key => {
+          // eslint-disable-next-line no-prototype-builtins
           if (!process.env.hasOwnProperty(key)) {
             process.env[key] = parsed[key]
           }
@@ -309,6 +262,41 @@ ${getCodeFrame(e, { cwd: this.cwd })}
 
     load(basePath)
     load(localPath)
+  }
+
+  writeTmpFile(file, content) {
+    const { paths } = this
+    const path = join(paths.absTmpDirPath, file)
+    mkdirp.sync(dirname(path))
+    writeFileSync(path, content, 'utf-8')
+  }
+
+  init() {
+    // load env
+    this.loadEnv()
+
+    // init plugins
+    this.initPlugins()
+
+    // reload user config
+    const userConfig = new UserConfig(this)
+    const config = userConfig.getConfig({ force: true })
+    mergeConfig(this.config, config)
+    this.userConfig = userConfig
+    if (config.browserslist) {
+      deprecate('config.browserslist', 'use config.targets instead')
+    }
+    debug('got user config')
+    debug(this.config)
+
+    // assign user's outputPath config to paths object
+    if (config.outputPath) {
+      const { paths } = this
+      paths.outputPath = config.outputPath
+      paths.absOutputPath = join(paths.cwd, config.outputPath)
+    }
+    debug('got paths')
+    debug(this.paths)
   }
 
   registerCommand(name, opts, fn) {
@@ -324,23 +312,44 @@ ${getCodeFrame(e, { cwd: this.cwd })}
     this.commands[name] = { fn, opts }
   }
 
-  writeTmpFile(file, content) {
-    const { paths } = this
-    const path = join(paths.absTmpDirPath, file)
-    mkdirp.sync(dirname(path))
-    writeFileSync(path, content, 'utf-8')
+  run(name = 'help', args) {
+    this.init()
+    return this.runCommand(name, args)
   }
 
-  changePluginOption(id, newOpts) {
-    assert(id, `id must supplied`)
-    const plugin = this.plugins.filter(p => p.id === id)[0]
-    assert(plugin, `plugin ${id} not found`)
-    plugin.opts = newOpts
-    if (plugin.onOptionChange) {
-      plugin.onOptionChange(newOpts)
-    } else {
-      this.restart(`plugin ${id}'s option changed`)
+  runCommand(rawName, rawArgs) {
+    debug(`raw command name: ${rawName}, args: ${JSON.stringify(rawArgs)}`)
+    const { name, args } = this.applyPlugins('_modifyCommand', {
+      initialValue: {
+        name: rawName,
+        args: rawArgs
+      }
+    })
+    debug(`run ${name} with args ${JSON.stringify(args)}`)
+
+    const command = this.commands[name]
+    if (!command) {
+      signale.error(`Command ${chalk.underline.cyan(name)} does not exists`)
+      process.exit(1)
     }
+
+    const { fn, opts } = command
+    if (opts.webpack) {
+      // webpack config
+      this.webpackConfig = require('./getWebpackConfig').default(this)
+      if (this.config.ssr) {
+        // when use ssr, push client-manifest plugin into client webpackConfig
+        this.webpackConfig.plugins.push(
+          new (require('./plugins/commands/getChunkMapPlugin').default(this))()
+        )
+        // server webpack config
+        this.ssrWebpackConfig = require('./getWebpackConfig').default(this, {
+          ssr: this.config.ssr
+        })
+      }
+    }
+
+    return fn(args)
   }
 }
 
