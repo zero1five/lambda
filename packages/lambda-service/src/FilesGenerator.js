@@ -127,6 +127,7 @@ export default class FilesGenerator {
     this.service.applyPlugins('onGenerateFiles')
     this.generateRouterJS()
     this.generateEntry()
+    this.generateHistory()
   }
 
   generateEntry() {
@@ -279,6 +280,33 @@ window.g_initialData = \${require('${winPath(
     writeFileSync(
       paths.absLibraryJSPath,
       prettierFile(`${entryContent.trim()}\n`),
+      'utf-8'
+    )
+  }
+
+  generateHistory() {
+    const { paths, config } = this.service
+    const tpl = readFileSync(paths.defaultHistoryTplPath, 'utf-8')
+    const initialHistory = `
+require('lambda-echo/lib/createHistory').default({
+  basename: window.routerBase,
+})
+    `.trim()
+    let history = this.service.applyPlugins('modifyEntryHistory', {
+      initialValue: initialHistory
+    })
+    if (config.ssr) {
+      history = `
+__IS_BROWSER ? ${initialHistory} : require('history').createMemoryHistory()
+      `.trim()
+    }
+    const content = Mustache.render(tpl, {
+      globalVariables: !this.service.config.disableGlobalVariables,
+      history
+    })
+    writeFileSync(
+      join(paths.absTmpDirPath, 'history.js'),
+      prettierFile(`${content.trim()}\n`),
       'utf-8'
     )
   }

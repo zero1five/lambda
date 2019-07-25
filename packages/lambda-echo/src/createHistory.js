@@ -1,4 +1,4 @@
-import createHistory from 'history/createBrowserHistory'
+const createHistory = require('history').createBrowserHistory
 import { normalizePath } from './utils'
 
 export default function(opts) {
