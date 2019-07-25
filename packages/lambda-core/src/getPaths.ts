@@ -15,7 +15,7 @@ export default function(opts: IOpts) {
   const { cwd, config } = opts
   const outputPath = config.outputPath || './dist'
 
-  let pagesPath = 'pages'
+  let pagesPath = 'src/pages'
   if (process.env.PAGES_PATH) {
     pagesPath = process.env.PAGES_PATH
   } else {

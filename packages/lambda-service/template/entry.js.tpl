@@ -1,7 +1,4 @@
 {{{ polyfillImports }}}
-{{#globalVariables}}
-import history from './history';
-{{/globalVariables}}
 {{{ importsAhead }}}
 import React from 'react';
 import ReactDOM from 'react-dom';

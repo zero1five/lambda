@@ -6,6 +6,5 @@ coverage
 .history
 .nyc_output
 dist
-/packages/lambda-playground
 /packages/**/lib
 !/packages/**/errorCodeMap/lib

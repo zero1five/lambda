@@ -62,14 +62,6 @@ export default function(api) {
       .set('react-router', reactRouterDir)
       .set('react-router-dom', reactRouterDOMDir)
       .set('react-router-config', reactRouterConfigDir)
-      .set(
-        'history',
-        compatDirname(
-          'umi-history/package.json',
-          cwd,
-          dirname(require.resolve('umi-history/package.json'))
-        )
-      )
       .set('@', paths.absSrcPath)
       .set('@tmp', paths.absTmpDirPath)
   })

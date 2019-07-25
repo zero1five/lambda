@@ -11,7 +11,6 @@ export default function(service) {
     ...getPaths({ cwd, config }),
     defaultEntryTplPath: template('entry.js.tpl'),
     defaultRouterTplPath: template('router.js.tpl'),
-    defaultHistoryTplPath: template('history.js.tpl'),
     defaultRegisterSWTplPath: template('registerServiceWorker.js'),
     defaultDocumentPath: template('document.ejs'),
     defaultBlockEntryTplPath: template('blockEntry.js.tpl')

@@ -51,7 +51,7 @@ module.exports = ({
     isPlainObject(webpackConfig) || Array.isArray(webpackConfig),
     'webpackConfig should be plain object or array.'
   )
-  console.log('lambda-webpack', 1)
+
   choosePort(port || DEFAULT_PORT)
     .then(port => {
       if (port === null) {
