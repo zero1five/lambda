@@ -18,10 +18,11 @@ export default function(opts = {}) {
     './plugins/commands/dev',
     './plugins/commands/build',
     './plugins/commands/version',
-    './plugins/afwebpack-config',
+    './plugins/webpack-config',
     './plugins/mountElementId',
     './plugins/global-js',
-    './plugins/global-css'
+    './plugins/global-css',
+    'lambda-plugin-rain'
   ]
 
   const pluginsObj = [
