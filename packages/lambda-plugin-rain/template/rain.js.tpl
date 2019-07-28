@@ -32,6 +32,6 @@ export class _RainContainer extends Component {
   render() {
     const app = getApp();
     app.router(() => this.props.children);
-    return app.start()();
+    return app.run()();
   }
 }

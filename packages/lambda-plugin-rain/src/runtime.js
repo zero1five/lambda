@@ -2,7 +2,7 @@ import React from 'react'
 import { _RainContainer, getApp } from '@tmp/rain'
 
 export function rootContainer(container) {
-  return React.createElement(_DvaContainer, null, container)
+  return React.createElement(_RainContainer, null, container)
 }
 
 export function initialProps(props) {

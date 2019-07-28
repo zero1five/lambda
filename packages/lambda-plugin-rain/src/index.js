@@ -143,6 +143,7 @@ export default function(api, opts = {}) {
     join(paths.absSrcPath, 'rain.tsx')
   ])
 
+  api.addRuntimePlugin(join(__dirname, './runtime'))
   api.addRuntimePluginKey('redux-rain')
 
   api.addEntryCodeAhead(
