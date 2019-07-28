@@ -56,8 +56,8 @@ export default function(api, opts = {}) {
         if (exclude instanceof RegExp && exclude.test(getModelName(model))) {
           return false
         }
-        return true
       }
+      return true
     })
   }
 
@@ -65,10 +65,7 @@ export default function(api, opts = {}) {
     return exclude(getGlobalModels(api), optsToArray(opts.exclude))
       .map(path =>
         `
-    app.model({ namespace: '${basename(
-      path,
-      extname(path)
-    )}', ...(require('${path}').default) });
+    app.model(require('${path}').default, '${basename(path, extname(path))}');
   `.trim()
       )
       .join('\r\n')
@@ -80,6 +77,7 @@ export default function(api, opts = {}) {
     process.env.DEFAULT_RAIN_DIR ||
       dirname(require.resolve('redux-rain/package.json'))
   )
+
   const rainVersion = require(join(rainDir, 'package.json')).version
 
   function generateInitRain() {
@@ -114,7 +112,8 @@ export default function(api, opts = {}) {
   api.modifyAFWebpackOpts(memo => {
     const alias = {
       ...memo.alias,
-      'redux-rain': require.resolve(rainDir),
+      'redux-rain':
+        /* require.resolve(rainDir), */ '/Users/apple/Documents/lab/rainjs/dist/redux-rain.cjs.js',
       'path-to-regexp': require.resolve('path-to-regexp'),
       'object-assign': require.resolve('object-assign'),
       ...(opts.immer
