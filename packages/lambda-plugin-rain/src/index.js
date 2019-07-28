@@ -80,6 +80,7 @@ export default function(api, opts = {}) {
     process.env.DEFAULT_RAIN_DIR ||
       dirname(require.resolve('redux-rain/package.json'))
   )
+  const rainVersion = require(join(rainDir, 'package.json')).version
 
   function generateInitRain() {
     const tpl = join(__dirname, '../template/rain.js.tpl')
@@ -105,10 +106,15 @@ export default function(api, opts = {}) {
     generateInitRain()
   })
 
+  api.addVersionInfo([
+    `redux-rain@${rainVersion} (${rainDir})`,
+    `path-to-regexp@${require('path-to-regexp/package').version}`
+  ])
+
   api.modifyAFWebpackOpts(memo => {
     const alias = {
       ...memo.alias,
-      rain: rainDir,
+      'redux-rain': require.resolve(rainDir),
       'path-to-regexp': require.resolve('path-to-regexp'),
       'object-assign': require.resolve('object-assign'),
       ...(opts.immer
@@ -137,7 +143,8 @@ export default function(api, opts = {}) {
     join(paths.absSrcPath, 'rain.tsx')
   ])
 
-  api.addRuntimePluginKey('rain')
+  api.addRuntimePluginKey('redux-rain')
+
   api.addEntryCodeAhead(
     `
 const app = require('@tmp/rain')._onCreate();
