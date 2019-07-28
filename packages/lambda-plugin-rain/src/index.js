@@ -1,14 +1,84 @@
-import { dirname } from 'path'
+import { join, dirname, basename, extname } from 'path'
 import { readFileSync } from 'fs'
+import globby from 'globby'
+import { findJS, optsToArray } from '@lambda/utils'
+
+function getModel(cwd, api) {
+  const { config, winPath } = api
+
+  const modelJSPath = findJS(cwd, 'model')
+  if (modelJSPath) {
+    return [winPath(modelJSPath)]
+  }
+
+  return globby
+    .sync(`./${config.singular ? 'model' : 'models'}/**/*.{ts,tsx,js,jsx}`, {
+      cwd
+    })
+    .filter(
+      p =>
+        !p.endsWith('.d.ts') &&
+        !p.endsWith('.test.js') &&
+        !p.endsWith('.test.jsx') &&
+        !p.endsWith('.test.ts') &&
+        !p.endsWith('.test.tsx')
+    )
+    .map(p => winPath(join(cwd, p)))
+}
+
+function getGlobalModels(api) {
+  const { paths, routes } = api
+  let models = getModel(paths.absSrcPath, api)
+  return models
+}
 
 export default function(api, opts = {}) {
-  const { paths, cwd, compatDirname } = api
+  const { paths, cwd, compatDirname, winPath } = api
+
+  function getRainJS() {
+    const rainJS = findJS(paths.absSrcPath, 'redux-rain')
+    if (rainJS) {
+      return winPath(rainJS)
+    }
+  }
+
+  function getModelName(model) {
+    const modelArr = winPath(model).split('/')
+    return modelArr[modelArr.length - 1]
+  }
+
+  function exclude(models, excludes) {
+    return models.filter(model => {
+      for (const exclude of excludes) {
+        if (typeof exclude === 'function' && exclude(getModelName(mode))) {
+          return false
+        }
+        if (exclude instanceof RegExp && exclude.test(getModelName(model))) {
+          return false
+        }
+        return true
+      }
+    })
+  }
+
+  function getGlobalModelContent() {
+    return exclude(getGlobalModels(api), optsToArray(opts.exclude))
+      .map(path =>
+        `
+    app.model({ namespace: '${basename(
+      path,
+      extname(path)
+    )}', ...(require('${path}').default) });
+  `.trim()
+      )
+      .join('\r\n')
+  }
 
   const rainDir = compatDirname(
-    'rainjs/package.json',
+    'redux-rain/package.json',
     cwd,
     process.env.DEFAULT_RAIN_DIR ||
-      dirname(require.resolve('rainjs/package.json'))
+      dirname(require.resolve('redux-rain/package.json'))
   )
 
   function generateInitRain() {
@@ -26,7 +96,7 @@ export default function(api, opts = {}) {
     tplContent = tplContent
       .replace('<%= ExtendRainConfig %>', '')
       .replace('<%= EnhanceApp %>', '')
-      .replace('<%= RegisterPlugins %>', getPluginContent())
+      .replace('<%= RegisterPlugins %>', '')
       .replace('<%= RegisterModels %>', getGlobalModelContent())
     api.writeTmpFile('rain.js', tplContent)
   }
@@ -67,7 +137,6 @@ export default function(api, opts = {}) {
     join(paths.absSrcPath, 'rain.tsx')
   ])
 
-  api.addRuntimePlugin(join(__dirname, './runtime'))
   api.addRuntimePluginKey('rain')
   api.addEntryCodeAhead(
     `

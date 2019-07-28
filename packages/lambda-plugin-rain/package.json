@@ -8,5 +8,12 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@lambda/utils": "^1.0.0",
+    "object-assign": "4.1.1",
+    "path-to-regexp": "1.7.0",
+    "redux-rain": "^1.0.2",
+    "globby": "7.1.1"
+  }
 }

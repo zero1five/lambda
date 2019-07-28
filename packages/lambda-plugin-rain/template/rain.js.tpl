@@ -1,11 +1,11 @@
-import rain from 'rainjs';
+import rain from 'redux-rain';
 import { Component } from 'react';
 import history from '@tmp/history';
 
 let app = null;
 
 export function _onCreate() {
-  const plugins = require('umi/_runtimePlugin');
+  const plugins = require('lambda-echo/_runtimePlugin');
   const runtimeRain = plugins.mergeConfig('rain');
   app = rain({
     history,

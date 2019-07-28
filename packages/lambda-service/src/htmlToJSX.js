@@ -96,7 +96,6 @@ export default function(html) {
   html = html.replace(/<style>([\s\S]+?)<\/style>/g, (a, b) => {
     return `<style dangerouslySetInnerHTML={{ __html: \`${b.trim()}\` }} />`
   })
-
   ;[
     'area',
     'base',
