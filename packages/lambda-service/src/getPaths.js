@@ -1,5 +1,5 @@
 import { join } from 'path'
-import getPaths from 'umi-core/lib/getPaths'
+import getPaths from '@lambda/core/lib/getPaths'
 
 function template(path) {
   return join(__dirname, '../template', path)

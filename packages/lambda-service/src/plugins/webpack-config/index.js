@@ -88,7 +88,7 @@ export default function(api) {
     const { ssr } = args
     const isDev = process.env.NODE_ENV === 'development'
 
-    const entryScript = join(cwd, `./${paths.tmpDirPath}/umi.js`)
+    const entryScript = paths.absLibraryJSPath
     const setPublicPathFile = join(
       __dirname,
       '../../../template/setPublicPath.js'

@@ -51,7 +51,7 @@ export default function(opts: IOpts) {
     tmpDirPath,
     absTmpDirPath,
     absRouterJSPath: join(absTmpDirPath, 'router.js'),
-    absLibraryJSPath: join(absTmpDirPath, 'umi.js'),
+    absLibraryJSPath: join(absTmpDirPath, 'entry.js'),
     absRegisterSWJSPath: join(absTmpDirPath, 'registerServiceWorker.js'),
     absPageDocumentPath: join(absPagesPath, 'document.ejs')
   }
