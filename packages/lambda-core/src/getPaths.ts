@@ -25,8 +25,8 @@ export default function(opts: IOpts) {
     if (test(join(cwd, 'src/pages'))) {
       pagesPath = 'src/pages'
     }
-    if (test(join(cwd, 'page'))) {
-      pagesPath = 'page'
+    if (test(join(cwd, 'pages'))) {
+      pagesPath = 'pages'
     }
   }
 
@@ -36,7 +36,7 @@ export default function(opts: IOpts) {
   const envAffix = process.env.NODE_ENV === 'development' ? '' : `-production`
   const tmpDirPath = process.env.UMI_TEMP_DIR
     ? `${process.env.UMI_TEMP_DIR}${envAffix}`
-    : `${pagesPath}/.umi${envAffix}`
+    : `${pagesPath}/.rain${envAffix}`
 
   const absTmpDirPath = join(cwd, tmpDirPath)
 
