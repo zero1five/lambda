@@ -61,7 +61,7 @@ module.exports = ({
       if (process.send) {
         process.send({ type: 'UPDATE_PORT', port })
       }
-      console.log(webpackConfig)
+
       const compiler = webpack(webpackConfig)
 
       let isFirstCompile = true
