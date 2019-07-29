@@ -19,15 +19,18 @@ const debug = require('debug')('umi-build-dev:Service')
 
 export default class Service {
   constructor({ cwd }) {
-    //  用户传入的 cmd 不可信任 转化一下
+    // 设置当前node的工作目录
     this.cwd = cwd || process.cwd()
 
+    // 获取package内容
     try {
       this.pkg = require(join(this.cwd, 'package.json')) // eslint-disable-line
     } catch (e) {
       this.pkg = {}
     }
 
+    // 使用babel/register 改造require使得导入模块时自动转译
+    // 默认忽略node_modules
     registerBabel({
       cwd: this.cwd
     })
@@ -39,7 +42,7 @@ export default class Service {
     this.UmiError = UmiError
     this.printUmiError = printUmiError
 
-    // resolve user config
+    // 获取用户文件配置
     this.config = UserConfig.getConfig({
       cwd: this.cwd,
       service: this
@@ -51,7 +54,7 @@ export default class Service {
     this.extraPlugins = []
     debug(`plugins: ${this.plugins.map(p => p.id).join(' | ')}`)
 
-    // resolve paths
+    // 获取paths配置 === api.paths
     this.paths = getPaths(this)
   }
 

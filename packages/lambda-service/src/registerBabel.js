@@ -1,8 +1,8 @@
 import { join, isAbsolute } from 'path'
 import { existsSync } from 'fs'
-import registerBabel from 'af-webpack/registerBabel'
-import { winPath } from 'umi-utils'
-import { getConfigPaths } from 'umi-core/lib/getUserConfig'
+import { registerBabel } from 'lambda-webpack'
+import { winPath } from '@lambda/utils'
+import { getConfigPaths } from '@lambda/core/lib/getUserConfig'
 
 let files = null
 
