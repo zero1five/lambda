@@ -21,7 +21,8 @@ export default function(opts = {}) {
     './plugins/webpack-config',
     './plugins/mountElementId',
     './plugins/global-js',
-    './plugins/global-css'
+    './plugins/global-css',
+    'lambda-plugin-rain'
   ]
 
   const pluginsObj = [

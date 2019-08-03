@@ -1,6 +1,5 @@
-import rain from 'redux-rain';
+import rain, { createLoading } from 'redux-rain';
 import { Component } from 'react';
-// import createLoading from 'dva-loading';
 import history from '@tmp/history';
 
 let app = null;
@@ -15,7 +14,7 @@ export function _onCreate() {
     ...(window.g_useSSR ? { initialState: window.g_initialData } : {}),
   });
   <%= EnhanceApp %>
-  // app.use(createLoading());
+  app.use(createLoading());
   (runtimeRain.plugins || []).forEach(plugin => {
     app.use(plugin);
   });
