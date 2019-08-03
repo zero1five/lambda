@@ -32,6 +32,8 @@ $ npm start
 const compiler = require('lambda-webpack/lib/dev')
 
 compiler({ cwd, port, base, webpackConfig })
+
+compiler.run()
 ```
 
 ### API
@@ -104,4 +106,30 @@ Type: `function[]`
 
 ### afterMiddlewares
 
+Type: `function[]`
+
 在 webpackServer 内置中间件执行之后的自定义中间件。
+
+### beforeServer
+
+Type: `function[devServer]`
+
+在 webpackServer 运行之前的钩子
+
+### afterServer
+
+type: `function[devServer, devServerPort]`
+
+在 webpackServer 运行之后的钩子
+
+### onFail
+
+type: `function[{ stats }]`
+
+编译完成后存在错误时会执行的钩子。
+
+### onCompileDone
+
+type: `function[{ isFirstCompile, stats }]`
+
+编译完成后会执行的钩子。
