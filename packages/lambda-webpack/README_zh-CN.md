@@ -72,7 +72,7 @@ Type: `string`
 
 Type: `object`
 
-自定义的 webpack 配置。
+自定义的 webpack 配置。[详细配置](#配置相关)
 
 ### proxy
 
@@ -114,13 +114,13 @@ Type: `function[]`
 
 Type: `function[devServer]`
 
-在 webpackServer 运行之前的钩子
+在 webpackServer 运行之前的钩子。
 
 ### afterServer
 
 type: `function[devServer, devServerPort]`
 
-在 webpackServer 运行之后的钩子
+在 webpackServer 运行之后的钩子。
 
 ### onFail
 
@@ -133,3 +133,9 @@ type: `function[{ stats }]`
 type: `function[{ isFirstCompile, stats }]`
 
 编译完成后会执行的钩子。
+
+---
+
+## 配置相关
+
+传递给 webpack 的 config。
