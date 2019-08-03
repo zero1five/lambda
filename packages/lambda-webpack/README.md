@@ -1,5 +1,7 @@
 # lambda-webpack
 
+English | [简体中文](./README_zh-CN.md)
+
 > my spectacular project
 
 ## Status

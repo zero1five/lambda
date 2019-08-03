@@ -107,8 +107,8 @@ export default function(api) {
                 initialValue: [
                   ...(service.ssrWebpackConfig
                     ? [
-                        require('af-webpack/webpack-dev-middleware')(
-                          require('af-webpack/webpack')(
+                        require('lambda-webpack')['webpack-dev-middleware'](
+                          require('lambda-webpack')['webpack'](
                             service.ssrWebpackConfig
                           ),
                           {}

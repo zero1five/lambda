@@ -42,8 +42,8 @@ module.exports = ({
   onFail = noop,
   proxy,
   port,
-  history,
   base,
+  https = false,
   serverConfig: serverConfigFromOpts = {}
 }) => {
   assert(webpackConfig, 'webpackConfig should be supplied.')
@@ -67,7 +67,7 @@ module.exports = ({
       let isFirstCompile = true
       const IS_CI = !!process.env.CI
       const SILENT = !!process.env.SILENT
-      const urls = prepareUrls(PROTOCOL, HOST, port, base, history)
+      const urls = prepareUrls(PROTOCOL, HOST, port, base)
 
       compiler.hooks.done.tap('lambda-webpack dev', stats => {
         if (stats.hasErrors()) {
@@ -128,10 +128,10 @@ module.exports = ({
         overlay: false,
         host: HOST,
         proxy,
-        https: !!process.env.HTTPS,
+        https,
         cert: CERT,
         key: KEY,
-        contentBase: contentBase || process.env.CONTENT_BASE,
+        contentBase,
         before(app) {
           ;(beforeMiddlewares || []).forEach(middleware => {
             app.use(middleware)
