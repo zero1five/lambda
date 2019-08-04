@@ -62,6 +62,7 @@ export default function(api, opts = {}) {
   }
 
   function getGlobalModelContent() {
+    console.log('emit')
     return exclude(getGlobalModels(api), optsToArray(opts.exclude))
       .map(path =>
         `
@@ -149,7 +150,7 @@ export default function(api, opts = {}) {
     `
 const app = require('@tmp/rain')._onCreate();
 ${api.config.disableGlobalVariables ? '' : `window.g_app = app;`}
-${api.config.ssr ? `app.router(() => <div />);\napp.start();` : ''}
+${api.config.ssr ? `app.router(() => <div />);\napp.run();` : ''}
   `.trim()
   )
 }
