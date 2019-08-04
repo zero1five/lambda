@@ -23,7 +23,9 @@ switch (process.argv[2]) {
     })
     break
   default:
-    console.error(`Unknown command ${process.argv[2]}`)
+    console.log()
+    console.error(`Unknown command [${process.argv[2]}]`)
+    console.log()
 }
 
 function getWebpackConfig() {
