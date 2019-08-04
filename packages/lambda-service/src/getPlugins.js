@@ -22,7 +22,14 @@ export default function(opts = {}) {
     './plugins/mountElementId',
     './plugins/global-js',
     './plugins/global-css',
-    'lambda-plugin-rain'
+    [
+      'lambda-plugin-rain',
+      {
+        dynamicImport: {
+          webpackChunkName: true
+        }
+      }
+    ]
   ]
 
   const pluginsObj = [

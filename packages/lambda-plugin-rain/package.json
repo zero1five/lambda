@@ -10,6 +10,7 @@
     "@lambda/utils": "^1.0.0",
     "globby": "7.1.1",
     "object-assign": "4.1.1",
+    "path-is-root": "^0.1.0",
     "path-to-regexp": "1.7.0",
     "redux-rain": "^1.0.4"
   }
