@@ -50,7 +50,7 @@ module.exports = {
 compiler({ cwd })
 ```
 
-#### cwd
+### cwd
 
 Type: `string`
 

@@ -138,8 +138,7 @@ export default function(api) {
     if (process.env.BABEL_POLYFILL !== 'none') {
       plugins.push(require.resolve('./lockCoreJSVersionPlugin'))
     }
-    console.log(config)
-    console.log(browserslist)
+
     return {
       ...memo,
       ...config,
