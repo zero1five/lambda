@@ -119,6 +119,7 @@ export default class PluginAPI {
         this.registerMethod(...method)
       } else {
         let type
+        // _前缀判断是否是私有方法
         const isPrivate = method.charAt(0) === '_'
         const slicedMethod = isPrivate ? method.slice(1) : method
         if (slicedMethod.indexOf('modify') === 0) {
