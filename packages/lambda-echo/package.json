@@ -1,13 +1,12 @@
 {
   "name": "lambda-echo",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "bin": {
     "lambda-echo": "./bin/index.js"
   },
   "main": "./lib/index.js",
   "dependencies": {
-    "lambda-service": "0.0.1",
     "@babel/core": "7.4.5",
     "@babel/runtime": "7.4.5",
     "@types/react": "~16.8.1",
@@ -16,6 +15,7 @@
     "debug": "4.1.1",
     "dotenv": "8.0.0",
     "is-windows": "1.0.2",
+    "lambda-service": "^0.0.2",
     "lodash": "4.17.13",
     "react-loadable": "5.5.0",
     "resolve-cwd": "3.0.0",

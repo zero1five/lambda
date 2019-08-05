@@ -1,6 +1,6 @@
 {
   "name": "lambda-webpack",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "my spectacular project",
   "main": "./index.js",
   "bin": "./bin/index.js",
