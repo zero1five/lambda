@@ -23,6 +23,7 @@ export default function(opts = {}) {
     './plugins/mountElementId',
     './plugins/global-js',
     './plugins/global-css',
+    './plugins/404', // 404 must after mock
     [
       'lambda-plugin-rain',
       {
