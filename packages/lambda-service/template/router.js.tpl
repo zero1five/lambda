@@ -1,7 +1,6 @@
 {{{ importsAhead }}}
 import React from 'react';
 import { Router as DefaultRouter, Route, Switch } from 'react-router-dom';
-import dynamic from 'lambda-echo/dynamic';
 import renderRoutes from 'lambda-echo/lib/renderRoutes';
 import history from '@tmp/history';
 {{{ imports }}}
