@@ -1,4 +1,4 @@
-const isWebpackError = require('../../utils/isWebpackError')
+const { isWebpackError } = require('../../utils')
 
 module.exports = {
   test({ context }) {
