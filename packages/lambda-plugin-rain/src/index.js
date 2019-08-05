@@ -51,7 +51,7 @@ function handleDependencyImport(api, { shouldImportDynamic }) {
   // let modifyRouterRootComponentValue = `require('dva/router').routerRedux.ConnectedRouter`
   let addRouterImportValue = shouldImportDynamic
     ? {
-        source: 'rain/dynamic',
+        source: 'redux-rain/dynamic',
         specifier: '_rainDynamic'
       }
     : null
@@ -133,7 +133,7 @@ export default function(api, opts = {}) {
       }
       let ret = `
   __IS_BROWSER
-    ? _dvaDynamic({
+    ? _rainDynamic({
       <%= MODELS %>
       component: () => import(${extendStr}'${importPath}'),
       ${loadingOpts}
@@ -197,16 +197,31 @@ models: () => [
     `path-to-regexp@${require('path-to-regexp/package').version}`
   ])
 
+  const pathToRegexpDir = compatDirname(
+    'path-to-regexp/package.json',
+    cwd,
+    dirname(require.resolve('path-to-regexp/package.json'))
+  )
+
+  const objectAssignDir = compatDirname(
+    'object-assign/package.json',
+    cwd,
+    dirname(require.resolve('object-assign/package.json'))
+  )
+
   api.modifyAFWebpackOpts(memo => {
     const alias = {
       ...memo.alias,
-      'redux-rain':
-        /* require.resolve(rainDir), */ '/Users/apple/Documents/lab/rainjs/dist/redux-rain.cjs.js',
-      'path-to-regexp': require.resolve('path-to-regexp'),
-      'object-assign': require.resolve('object-assign'),
+      'redux-rain': rainDir,
+      'path-to-regexp': pathToRegexpDir,
+      'object-assign': objectAssignDir,
       ...(opts.immer
         ? {
-            immer: require.resolve('immer')
+            immer: compatDirname(
+              'immer/package.json',
+              cwd,
+              dirname(require.resolve('immer/package.json'))
+            )
           }
         : {})
     }
