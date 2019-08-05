@@ -7,7 +7,6 @@ import chalk from 'chalk'
 import { debounce, uniq } from 'lodash'
 import Mustache from 'mustache'
 import { winPath, findJS, prettierFile } from 'umi-utils'
-import stripJSONQuote from './routes/stripJSONQuote'
 import routesToJSON from './routes/routesToJSON'
 import importsToStr from './importsToStr'
 import { EXT_LIST } from './constants'
@@ -16,6 +15,16 @@ import htmlToJSX from './htmlToJSX'
 import getRoutePaths from './routes/getRoutePaths'
 
 const debug = require('debug')('umi:FilesGenerator')
+
+const stripJSONQuote = function(jsonStr) {
+  return jsonStr
+    .replace(/\"component\": (\"(.+?)\")/g, (global, m1, m2) => {
+      return `"component": ${m2.replace(/\^/g, '"')}`
+    })
+    .replace(/\"Routes\": (\"(.+?)\")/g, `"Routes": $2`)
+    .replace(/\\r\\n/g, '\r\n')
+    .replace(/\\n/g, '\r\n')
+}
 
 export const watcherIgnoreRegExp = /(^|[\/\\])(_mock.js$|\..)/
 
@@ -317,6 +326,7 @@ __IS_BROWSER ? ${initialHistory} : require('history').createMemoryHistory()
     this.RoutesManager.fetchRoutes()
 
     const routesContent = this.getRouterJSContent()
+
     // 避免文件写入导致不必要的 webpack 编译
     if (this.routesContent !== routesContent) {
       writeFileSync(
@@ -331,6 +341,7 @@ __IS_BROWSER ? ${initialHistory} : require('history').createMemoryHistory()
   getRouterJSContent() {
     const { paths } = this.service
     const routerTpl = readFileSync(paths.defaultRouterTplPath, 'utf-8')
+    // replace {{ routes }} 的 routes 对象
     const routes = stripJSONQuote(
       this.getRoutesJSON({
         env: process.env.NODE_ENV
