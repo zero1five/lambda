@@ -3,13 +3,6 @@ import { existsSync } from 'fs'
 import assert from 'assert'
 import extend from 'extend2'
 import { winPath } from 'umi-utils'
-import { IConfig } from 'umi-types'
-
-interface IOpts {
-  cwd?: string
-  defaultConfig?: IConfig
-  onError?: Function
-}
 
 export function getConfigFile(cwd) {
   const files = process.env.UMI_CONFIG_FILE
@@ -36,13 +29,13 @@ function defaultOnError(e) {
   console.error(e)
 }
 
-function requireFile(f, opts: IOpts = {}) {
+function requireFile(f, opts = {}) {
   if (!existsSync(f)) {
     return {}
   }
 
   const { onError = defaultOnError } = opts
-  let ret: any = {}
+  let ret = {}
   try {
     ret = require(f) || {} // eslint-disable-line
   } catch (e) {
@@ -52,11 +45,11 @@ function requireFile(f, opts: IOpts = {}) {
   return ret.default || ret
 }
 
-export function mergeConfigs(...configs): IConfig {
+export function mergeConfigs(...configs) {
   return extend(true, ...configs)
 }
 
-export function getConfigByConfigFile(configFile, opts: IOpts = {}): IConfig {
+export function getConfigByConfigFile(configFile, opts = {}) {
   const umiEnv = process.env.UMI_ENV
   const isDev = process.env.NODE_ENV === 'development'
   const { defaultConfig, onError } = opts
@@ -71,7 +64,7 @@ export function getConfigByConfigFile(configFile, opts: IOpts = {}): IConfig {
   return mergeConfigs(...configs)
 }
 
-export function getConfigPaths(cwd): string[] {
+export function getConfigPaths(cwd) {
   const env = process.env.UMI_ENV
   return [
     join(cwd, 'config/'),
@@ -98,7 +91,7 @@ export function cleanConfigRequireCache(cwd) {
   })
 }
 
-export default function(opts: IOpts = {}): IConfig {
+export default function(opts = {}) {
   const { cwd, defaultConfig } = opts
   const absConfigFile = getConfigFile(cwd)
 

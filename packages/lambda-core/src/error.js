@@ -7,8 +7,7 @@ marked.setOptions({
   renderer: new TerminalRenderer()
 })
 
-const ERROR_CODE_MAP = require(process.env.ERROR_CODE_MAP_PATH ||
-  '../errorCodeMap')
+const ERROR_CODE_MAP = require('../errorCodeMap')
 
 class LambdaError extends Error {
   constructor(opts, ...params) {

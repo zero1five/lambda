@@ -15,9 +15,6 @@
     "signale": "1.4.0",
     "@lambda/utils": "1.0.0-alpha.0"
   },
-  "devDependencies": {
-    "umi-types": "0.3.15"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",

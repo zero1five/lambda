@@ -25,4 +25,12 @@ const errors = readdirSync(dir)
     return memo
   }, {})
 
+/**
+ * error = {
+ *   ERR_XX: {
+ *     en: xx,
+ *     'zh-CN': xx
+ *   }
+ * }
+ */
 module.exports = errors
