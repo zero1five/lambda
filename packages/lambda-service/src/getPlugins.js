@@ -31,7 +31,8 @@ export default function(opts = {}) {
           webpackChunkName: true
         }
       }
-    ]
+    ],
+    ['lambda-plugin-ssr', {}]
   ]
 
   const pluginsObj = [

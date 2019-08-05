@@ -41,6 +41,7 @@
     "js-yaml": "3.13.1",
     "lambda-echo": "^1.0.0-alpha.0",
     "lambda-plugin-rain": "^1.0.0-alpha.0",
+    "lambda-plugin-ssr": "^1.0.0",
     "lambda-webpack": "^1.0.0-alpha.0",
     "lodash": "4.17.13",
     "mkdirp": "0.5.1",
