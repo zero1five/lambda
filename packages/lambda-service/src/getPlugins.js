@@ -18,6 +18,7 @@ export default function(opts = {}) {
     './plugins/commands/dev',
     './plugins/commands/build',
     './plugins/commands/version',
+    './plugins/commands/generate',
     './plugins/webpack-config',
     './plugins/mountElementId',
     './plugins/global-js',

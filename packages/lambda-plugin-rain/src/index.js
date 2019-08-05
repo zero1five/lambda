@@ -245,6 +245,11 @@ models: () => [
     join(paths.absSrcPath, 'rain.tsx')
   ])
 
+  api.registerGenerator('rain:model', {
+    Generator: require('./model').default(api),
+    resolved: join(__dirname, './model')
+  })
+
   api.addRuntimePlugin(join(__dirname, './runtime'))
   api.addRuntimePluginKey('redux-rain')
 
