@@ -5,9 +5,12 @@ import extend from 'extend2'
 import { winPath } from 'umi-utils'
 
 export function getConfigFile(cwd) {
-  const files = process.env.UMI_CONFIG_FILE
-    ? process.env.UMI_CONFIG_FILE.split(',').filter(v => v && v.trim())
-    : ['.umirc.ts', '.umirc.js', 'config/config.ts', 'config/config.js']
+  const files = [
+    '.umirc.ts',
+    '.umirc.js',
+    'config/config.ts',
+    'config/config.js'
+  ]
   const validFiles = files.filter(f => existsSync(join(cwd, f)))
   assert(
     validFiles.length <= 1,

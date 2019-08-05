@@ -32,8 +32,6 @@ const aliasMap = {
 switch (script) {
   case 'build':
   case 'dev':
-  case 'test':
-  case 'inspect':
     // eslint-disable-next-line import/no-dynamic-require
     require(`./scripts/${script}`)
     break
