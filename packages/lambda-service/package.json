@@ -88,5 +88,9 @@
     "lib",
     "src",
     "template"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zero1five/lambda/tree/master/packages/lambda-service"
+  }
 }
