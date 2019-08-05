@@ -6,11 +6,9 @@ export default {
   browserFiles: [
     'src/createHistory.js',
     'src/renderRoutes.js',
-    'src/Route.js',
     'src/history.js',
     'src/runtimePlugin.js',
-    'src/utils.js',
-    'src/withRouter.js'
+    'src/utils.js'
   ],
   extraExternals: ['@tmp', 'react-router-dom', 'react']
 }
