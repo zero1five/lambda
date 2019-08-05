@@ -118,13 +118,6 @@ export default function(api, opts = {}) {
       process.env.CODE_SPLITTING_LEVEL = opts.level
     }
 
-    api.modifyAFWebpackOpts((memo, opts = {}) => {
-      return {
-        ...memo,
-        disableDynamicImport: !!opts.ssr
-      }
-    })
-
     api.modifyRouteComponent((memo, args) => {
       const { importPath, webpackChunkName } = args
       if (!webpackChunkName) {
@@ -268,7 +261,6 @@ models: () => [
     `
 const app = require('@tmp/rain')._onCreate();
 ${api.config.disableGlobalVariables ? '' : `window.g_app = app;`}
-${api.config.ssr ? `app.router(() => <div />);\napp.run();` : ''}
   `.trim()
   )
 }
