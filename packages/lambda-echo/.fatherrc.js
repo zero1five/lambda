@@ -7,7 +7,7 @@ export default {
     'src/createHistory.js',
     'src/renderRoutes.js',
     'src/Route.js',
-    'src/router.js',
+    'src/history.js',
     'src/runtimePlugin.js',
     'src/utils.js',
     'src/withRouter.js'

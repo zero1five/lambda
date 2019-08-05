@@ -1,1 +1,1 @@
-export * from '@tmp/umiExports'
+export { default as history } from './history'
