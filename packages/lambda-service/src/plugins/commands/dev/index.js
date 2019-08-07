@@ -22,8 +22,8 @@ export default function(api) {
       RoutesManager.fetchRoutes()
 
       const { port } = args
-
       process.env.NODE_ENV = 'development'
+      service.RoutesManager = RoutesManager
       service.applyPlugins('onStart')
       service._applyPluginsAsync('onStartAsync').then(() => {
         const filesGenerator = getFilesGenerator(service, {

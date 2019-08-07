@@ -22,6 +22,7 @@ export default function(api) {
 
       return new Promise((resolve, reject) => {
         process.env.NODE_ENV = 'production'
+        service.RoutesManager = RoutesManager
         service.applyPlugins('onStart')
         service._applyPluginsAsync('onStartAsync').then(() => {
           const filesGenerator = getFilesGenerator(service, {

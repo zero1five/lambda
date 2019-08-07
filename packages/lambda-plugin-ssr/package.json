@@ -12,5 +12,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/zero1five/lambda/tree/master/packages/lambda-plugin-ssr"
+  },
+  "dependencies": {
+    "@lambda/utils": "^1.0.0-alpha.0",
+    "lambda-service": "^1.0.0-alpha.0"
   }
 }

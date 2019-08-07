@@ -1,4 +1,31 @@
+import { uniq } from 'lodash'
+import { winPath } from '@lambda/utils'
+import getHtmlGenerator from 'lambda-service/lib/plugins/commands/getHtmlGenerator'
+import htmlToJSX from 'lambda-service/lib/htmlToJSX'
+
+function getRoutePaths(routes) {
+  return uniq(
+    routes.reduce((memo, route) => {
+      if (route.path) {
+        memo.push(route.path)
+        if (route.routes) {
+          memo = memo.concat(getRoutePaths(route.routes))
+        }
+      }
+      return memo
+    }, [])
+  )
+}
+
+function normalizePath(path, base = '/') {
+  if (path.startsWith(base)) {
+    path = path.replace(base, '/')
+  }
+  return path
+}
+
 export default function(api, opts) {
+  const { service } = api
   // 开启ssr时不设置webpack的optimization.splitChunks
   api.modifyAFWebpackOpts((memo, opts = {}) => {
     return {
@@ -10,6 +37,7 @@ export default function(api, opts) {
   // ssr时调用app.run | 只初始化不挂载dom
   api.addEntryCodeAhead(`app.router(() => <div />);\napp.run();`)
 
+  // 修改entry.js render content
   api.modifyEntryRender((memo, args) => {
     memo = memo.replace(
       '{{ modifyEntryRender }}',
@@ -20,6 +48,55 @@ export default function(api, opts) {
     }
     `.trim()
     )
+
+    return memo
+  })
+
+  // 修改entry.js history
+  api.modifyEntryHistory((memo, args) => {
+    memo = `
+    __IS_BROWSER ? ${memo} : require('history').createMemoryHistory()
+          `.trim()
+
+    return memo
+  })
+
+  // 修改tamplate map
+  api.modifyHtmlTemplateMap((memo, args) => {
+    const isProd = process.env.NODE_ENV === 'production'
+    const { config, RoutesManager } = service
+    const routePaths = getRoutePaths(RoutesManager.routes)
+    memo = routePaths.map(routePath => {
+      let ssrHtml = '<></>'
+      const hg = getHtmlGenerator(service, {
+        chunksMap: {
+          // TODO, for dynamic chunks
+          // placeholder waiting manifest
+          umi: [
+            isProd ? '__UMI_SERVER__.js' : 'umi.js',
+            isProd ? '__UMI_SERVER__.css' : 'umi.css'
+          ]
+        },
+        headScripts: [
+          {
+            content: `
+  window.g_useSSR=true;
+  window.g_initialData = \${require('${winPath(
+    require.resolve('serialize-javascript')
+  )}')(props)};
+            `.trim()
+          }
+        ]
+      })
+      const content = hg.getMatchedContent(
+        normalizePath(routePath, config.base)
+      )
+      ssrHtml = htmlToJSX(content).replace(
+        `<div id="${config.mountElementId || 'root'}"></div>`,
+        `<div id="${config.mountElementId || 'root'}">{ rootContainer }</div>`
+      )
+      return `'${routePath}': (${ssrHtml}),`
+    })
 
     return memo
   })

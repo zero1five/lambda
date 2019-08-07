@@ -79,6 +79,7 @@ export default class PluginAPI {
       'modifyEntryHistory',
       'modifyRouteComponent',
       'modifyRouterRootComponent',
+      'modifyHtmlTemplateMap',
       'modifyWebpackConfig',
       '_beforeServerWithApp',
       'beforeDevServer',

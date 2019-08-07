@@ -6,13 +6,10 @@ import assert from 'assert'
 import chalk from 'chalk'
 import { debounce, uniq } from 'lodash'
 import Mustache from 'mustache'
-import { winPath, findJS, prettierFile } from 'umi-utils'
+import { winPath, findJS, prettierFile } from '@lambda/utils'
 import routesToJSON from './routes/routesToJSON'
 import importsToStr from './importsToStr'
 import { EXT_LIST } from './constants'
-import getHtmlGenerator from './plugins/commands/getHtmlGenerator'
-import htmlToJSX from './htmlToJSX'
-import getRoutePaths from './routes/getRoutePaths'
 
 const debug = require('debug')('umi:FilesGenerator')
 
@@ -27,13 +24,6 @@ const stripJSONQuote = function(jsonStr) {
 }
 
 export const watcherIgnoreRegExp = /(^|[\/\\])(_mock.js$|\..)/
-
-function normalizePath(path, base = '/') {
-  if (path.startsWith(base)) {
-    path = path.replace(base, '/')
-  }
-  return path
-}
 
 export default class FilesGenerator {
   constructor(opts) {
@@ -211,42 +201,9 @@ export default class FilesGenerator {
       `Conflict keys found in [${validKeys.join(', ')}]`
     )
 
-    let htmlTemplateMap = []
-    if (config.ssr) {
-      const isProd = process.env.NODE_ENV === 'production'
-      const routePaths = getRoutePaths(this.RoutesManager.routes)
-      htmlTemplateMap = routePaths.map(routePath => {
-        let ssrHtml = '<></>'
-        const hg = getHtmlGenerator(this.service, {
-          chunksMap: {
-            // TODO, for dynamic chunks
-            // placeholder waiting manifest
-            umi: [
-              isProd ? '__UMI_SERVER__.js' : 'umi.js',
-              isProd ? '__UMI_SERVER__.css' : 'umi.css'
-            ]
-          },
-          headScripts: [
-            {
-              content: `
-window.g_useSSR=true;
-window.g_initialData = \${require('${winPath(
-                require.resolve('serialize-javascript')
-              )}')(props)};
-              `.trim()
-            }
-          ]
-        })
-        const content = hg.getMatchedContent(
-          normalizePath(routePath, config.base)
-        )
-        ssrHtml = htmlToJSX(content).replace(
-          `<div id="${config.mountElementId || 'root'}"></div>`,
-          `<div id="${config.mountElementId || 'root'}">{ rootContainer }</div>`
-        )
-        return `'${routePath}': (${ssrHtml}),`
-      })
-    }
+    let htmlTemplateMap = this.service.applyPlugins('modifyHtmlTemplateMap', {
+      initialValue: []
+    })
 
     const entryContent = Mustache.render(entryTpl, {
       globalVariables: !this.service.config.disableGlobalVariables,
@@ -292,19 +249,15 @@ window.g_initialData = \${require('${winPath(
   generateHistory() {
     const { paths, config } = this.service
     const tpl = readFileSync(paths.defaultHistoryTplPath, 'utf-8')
-    const initialHistory = `
-require('lambda-echo/lib/createHistory').default({
-  basename: window.routerBase,
-})
-    `.trim()
+
     let history = this.service.applyPlugins('modifyEntryHistory', {
-      initialValue: initialHistory
+      initialValue: `
+      require('lambda-echo/lib/createHistory').default({
+        basename: window.routerBase,
+      })
+          `.trim()
     })
-    if (config.ssr) {
-      history = `
-__IS_BROWSER ? ${initialHistory} : require('history').createMemoryHistory()
-      `.trim()
-    }
+
     const content = Mustache.render(tpl, {
       globalVariables: !this.service.config.disableGlobalVariables,
       history
