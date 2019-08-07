@@ -1,3 +1,4 @@
+import { join } from 'path'
 import { uniq } from 'lodash'
 import { winPath } from '@lambda/utils'
 import nodeExternals from 'webpack-node-externals'
@@ -6,7 +7,7 @@ import htmlToJSX from 'lambda-service/lib/htmlToJSX'
 import getHtmlGenerator from 'lambda-service/lib/plugins/commands/getHtmlGenerator'
 import replaceChunkMaps from 'lambda-service/lib/plugins/commands/replaceChunkMaps'
 
-const debug = require('debug')('ssr:getWebpackConfig')
+const debug = require('debug')('lambda-plugin-ssr')
 
 function getRoutePaths(routes) {
   return uniq(
@@ -31,19 +32,33 @@ function normalizePath(path, base = '/') {
 
 export default function(api, opts = {}) {
   const { externalWhitelist } = opts
-  const { service, config } = api
+  const { service, config, paths } = api
   const isDev = process.env.NODE_ENV === 'development'
 
   // 开启ssr时不设置webpack的optimization.splitChunks
   api.modifyAFWebpackOpts((memo, args) => {
     const { babel, define } = memo
-    const entry = isDev ? [] : memo.entry
+    const entryScript = paths.absLibraryJSPath
+    const setPublicPathFile = join(
+      __dirname,
+      '../../../template/setPublicPath.js'
+    )
+    const setPublicPath =
+      config.runtimePublicPath ||
+      (config.exportStatic && config.exportStatic.dynamicRoot)
+
+    const entry = isDev
+      ? {
+          umi: [...(setPublicPath ? [setPublicPathFile] : []), entryScript]
+        }
+      : memo.entry
     const targets = { node: true }
 
     return {
       ...memo,
       entry,
       targets,
+      ssr: opts || true,
       babel: Object.assign(babel, {
         presets: [
           [
@@ -56,7 +71,6 @@ export default function(api, opts = {}) {
         ]
       }),
       disableDynamicImport: !!opts,
-      ssr: opts || true,
       define: {
         ...define,
         __IS_BROWSER: false

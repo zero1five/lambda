@@ -32,7 +32,7 @@ export default function(opts = {}) {
         }
       }
     ],
-    ['lambda-plugin-ssr', {}]
+    'lambda-plugin-ssr'
   ]
 
   const pluginsObj = [
