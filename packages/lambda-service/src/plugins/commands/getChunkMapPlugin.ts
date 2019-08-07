@@ -10,7 +10,7 @@ import {
 
 export default (service: IApi) => {
   const isDev = process.env.NODE_ENV === 'development'
-  return class {
+  return class ChunkMapPlugin {
     apply(compiler: IWebpack.Compiler) {
       compiler.hooks.emit.tap('generate-ssr-client-manifest', compilation => {
         const { routes, config } = service

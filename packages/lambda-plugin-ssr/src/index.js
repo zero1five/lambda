@@ -29,14 +29,23 @@ function normalizePath(path, base = '/') {
   return path
 }
 
-export default function(api, opts) {
+export default function(api, opts = {}) {
   const { externalWhitelist } = opts
   const { service } = api
+  const isDev = process.env.NODE_ENV === 'development'
+
   // 开启ssr时不设置webpack的optimization.splitChunks
   api.modifyAFWebpackOpts((memo, args) => {
+    const { babel } = memo
+    const entry = isDev ? [] : memo.entry
+    const targets = { node: true }
+    console.log(babel)
     return {
       ...memo,
-      disableDynamicImport: !!opts.ssr
+      entry,
+      targets,
+      disableDynamicImport: !!opts,
+      ssr: opts || true
     }
   })
 
@@ -57,12 +66,12 @@ export default function(api, opts) {
     webpackConfig.output.filename = '[name].server.js'
     webpackConfig.output.chunkFilename = '[name].server.async.js'
     webpackConfig.plugins.push(
-      new (require('write-file-webpack-plugin'))({
-        test: /umi\.server\.js/
-      }),
       new (require('lambda-service/lib/plugins/commands/getChunkMapPlugin').default(
         service
-      ))()
+      ))(),
+      new (require('write-file-webpack-plugin'))({
+        test: /umi\.server\.js/
+      })
     )
 
     return webpackConfig

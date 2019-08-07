@@ -99,9 +99,7 @@ export default function(api) {
     const entry = isDev
       ? {
           umi: [
-            ...(process.env.HMR === 'none' || ssr
-              ? []
-              : [webpackHotDevClientPath]),
+            ...(process.env.HMR === 'none' ? [] : [webpackHotDevClientPath]),
             ...(setPublicPath ? [setPublicPathFile] : []),
             entryScript
           ]
@@ -110,17 +108,14 @@ export default function(api) {
           umi: [...(setPublicPath ? [setPublicPathFile] : []), entryScript]
         }
 
-    const targets = ssr
-      ? // current running node
-        { node: true }
-      : {
-          chrome: 49,
-          firefox: 64,
-          safari: 10,
-          edge: 13,
-          ios: 10,
-          ...(config.targets || {})
-        }
+    const targets = {
+      chrome: 49,
+      firefox: 64,
+      safari: 10,
+      edge: 13,
+      ios: 10,
+      ...(config.targets || {})
+    }
 
     // Transform targets to browserslist for autoprefixer
     const browserslist =
@@ -154,13 +149,11 @@ export default function(api) {
             require.resolve('babel-preset-umi'),
             {
               targets,
-              env: ssr
-                ? {}
-                : {
-                    useBuiltIns: 'entry',
-                    corejs: 2,
-                    ...(config.treeShaking ? { modules: false } : {})
-                  }
+              env: {
+                useBuiltIns: 'entry',
+                corejs: 2,
+                ...(config.treeShaking ? { modules: false } : {})
+              }
             }
           ]
         ],
