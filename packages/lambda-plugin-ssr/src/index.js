@@ -2,8 +2,9 @@ import { uniq } from 'lodash'
 import { winPath } from '@lambda/utils'
 import nodeExternals from 'webpack-node-externals'
 
-import getHtmlGenerator from 'lambda-service/lib/plugins/commands/getHtmlGenerator'
 import htmlToJSX from 'lambda-service/lib/htmlToJSX'
+import getHtmlGenerator from 'lambda-service/lib/plugins/commands/getHtmlGenerator'
+import replaceChunkMaps from 'lambda-service/lib/plugins/commands/replaceChunkMaps'
 
 const debug = require('debug')('ssr:getWebpackConfig')
 
@@ -58,10 +59,24 @@ export default function(api, opts) {
     webpackConfig.plugins.push(
       new (require('write-file-webpack-plugin'))({
         test: /umi\.server\.js/
-      })
+      }),
+      new (require('lambda-service/lib/plugins/commands/getChunkMapPlugin').default(
+        service
+      ))()
     )
 
     return webpackConfig
+  })
+
+  // webpack build onSuccess
+  api.onBuildSuccess((memo, args) => {
+    const { stats } = args
+    // replace using manifest
+    // __UMI_SERVER__.js/css => umi.${hash}.js/css
+    const clientStat = Array.isArray(stats.stats) ? stats.stats[0] : stats
+    if (clientStat) {
+      replaceChunkMaps(service, clientStat)
+    }
   })
 
   // ssr时调用app.run | 只初始化不挂载dom

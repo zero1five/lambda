@@ -105,11 +105,11 @@ export default function(api) {
               },
               beforeMiddlewares: service.applyPlugins('addMiddlewareAhead', {
                 initialValue: [
-                  ...(service.ssrWebpackConfig
+                  ...(service.webpackConfig
                     ? [
                         require('lambda-webpack')['webpack-dev-middleware'](
                           require('lambda-webpack')['webpack'](
-                            service.ssrWebpackConfig
+                            service.webpackConfig
                           ),
                           {}
                         )
