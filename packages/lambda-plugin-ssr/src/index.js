@@ -9,6 +9,20 @@ export default function(api, opts) {
 
   // ssr时调用app.run | 只初始化不挂载dom
   api.addEntryCodeAhead(`app.router(() => <div />);\napp.run();`)
+
+  api.modifyEntryRender((memo, args) => {
+    memo = memo.replace(
+      '{{ modifyEntryRender }}',
+      `
+    if (window.g_useSSR) {
+      // 如果开启服务端渲染则客户端组件初始化 props 使用服务端注入的数据
+      props = window.g_initialData;
+    }
+    `.trim()
+    )
+
+    return memo
+  })
 }
 
 /**

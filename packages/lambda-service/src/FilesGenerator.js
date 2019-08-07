@@ -142,40 +142,36 @@ export default class FilesGenerator {
   generateEntry() {
     const { paths, config } = this.service
 
-    // Generate umi.js
+    // Generate rain.js
     const entryTpl = readFileSync(paths.defaultEntryTplPath, 'utf-8')
     const initialRender = this.service.applyPlugins('modifyEntryRender', {
       initialValue: `
-  window.g_isBrowser = true;
-  let props = {};
-  // Both support SSR and CSR
-  if (window.g_useSSR) {
-    // 如果开启服务端渲染则客户端组件初始化 props 使用服务端注入的数据
-    props = window.g_initialData;
-  } else {
-    const pathname = location.pathname;
-    const activeRoute = findRoute(require('@tmp/router').routes, pathname);
-    // 在客户端渲染前，执行 getInitialProps 方法
-    // 拿到初始数据
-    if (activeRoute && activeRoute.component && activeRoute.component.getInitialProps) {
-      const initialProps = plugins.apply('modifyInitialProps', {
-        initialValue: {},
+      window.g_isBrowser = true;
+      let props = {};
+
+      const pathname = location.pathname;
+      const activeRoute = findRoute(require('@tmp/router').routes, pathname);
+      // 在客户端渲染前，执行 getInitialProps 方法
+      // 拿到初始数据
+      if (activeRoute && activeRoute.component && activeRoute.component.getInitialProps) {
+        const initialProps = plugins.apply('modifyInitialProps', {
+          initialValue: {},
+        });
+        props = activeRoute.component.getInitialProps ? await activeRoute.component.getInitialProps({
+          route: activeRoute,
+          isServer: false,
+          ...initialProps,
+        }) : {};
+      }
+      {{ modifyEntryRender }}
+      const rootContainer = plugins.apply('rootContainer', {
+        initialValue: React.createElement(require('./router').default, props),
       });
-      props = activeRoute.component.getInitialProps ? await activeRoute.component.getInitialProps({
-        route: activeRoute,
-        isServer: false,
-        ...initialProps,
-      }) : {};
-    }
-  }
-  const rootContainer = plugins.apply('rootContainer', {
-    initialValue: React.createElement(require('./router').default, props),
-  });
-  ReactDOM[window.g_useSSR ? 'hydrate' : 'render'](
-    rootContainer,
-    document.getElementById('${config.mountElementId}'),
-  );
-      `.trim()
+      ReactDOM[window.g_useSSR ? 'hydrate' : 'render'](
+        rootContainer,
+        document.getElementById('${config.mountElementId}'),
+      );
+          `.trim()
     })
 
     const moduleBeforeRenderer = this.service
@@ -280,7 +276,7 @@ window.g_initialData = \${require('${winPath(
         })
       ).join('\n'),
       moduleBeforeRenderer,
-      render: initialRender,
+      render: initialRender.replace('{{ modifyEntryRender }}', ''),
       plugins,
       validKeys,
       htmlTemplateMap: htmlTemplateMap.join('\n'),
