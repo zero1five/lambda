@@ -1,5 +1,5 @@
+const pkgUp = require('pkg-up')
 const { dirname } = require('path')
-const { pkgUp } = require('pkg-up')
 const { satisfies } = require('semver')
 
 const pkgPathCache = {}

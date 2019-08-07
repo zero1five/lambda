@@ -36,6 +36,7 @@ class UserConfig {
   }
 
   initConfigPlugins() {
+    // 处于该文件夹下的文件都默认加载
     const map = requireindex(join(__dirname, 'getConfig/configPlugins'))
     let plugins = Object.keys(map).map(key => {
       return map[key].default

@@ -1,7 +1,11 @@
 import { uniq } from 'lodash'
 import { winPath } from '@lambda/utils'
+import nodeExternals from 'webpack-node-externals'
+
 import getHtmlGenerator from 'lambda-service/lib/plugins/commands/getHtmlGenerator'
 import htmlToJSX from 'lambda-service/lib/htmlToJSX'
+
+const debug = require('debug')('ssr:getWebpackConfig')
 
 function getRoutePaths(routes) {
   return uniq(
@@ -25,13 +29,39 @@ function normalizePath(path, base = '/') {
 }
 
 export default function(api, opts) {
+  const { externalWhitelist } = opts
   const { service } = api
   // 开启ssr时不设置webpack的optimization.splitChunks
-  api.modifyAFWebpackOpts((memo, opts = {}) => {
+  api.modifyAFWebpackOpts((memo, args) => {
     return {
       ...memo,
       disableDynamicImport: !!opts.ssr
     }
+  })
+
+  // 修改ssr开启时webpack的配置
+  api.modifyWebpackConfig((webpackConfig, args) => {
+    const nodeExternalsOpts = {
+      whitelist: [
+        /\.(css|less|sass|scss)$/,
+        /^umi(\/.*)?$/,
+        'umi-plugin-locale',
+        ...(externalWhitelist || [])
+      ]
+    }
+
+    debug(`nodeExternalOpts:`, nodeExternalsOpts)
+    webpackConfig.externals = nodeExternals(nodeExternalsOpts)
+    webpackConfig.output.libraryTarget = 'commonjs2'
+    webpackConfig.output.filename = '[name].server.js'
+    webpackConfig.output.chunkFilename = '[name].server.async.js'
+    webpackConfig.plugins.push(
+      new (require('write-file-webpack-plugin'))({
+        test: /umi\.server\.js/
+      })
+    )
+
+    return webpackConfig
   })
 
   // ssr时调用app.run | 只初始化不挂载dom
