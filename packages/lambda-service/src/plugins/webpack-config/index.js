@@ -85,7 +85,6 @@ export default function(api) {
   /* eslint-enable import/no-dynamic-require */
 
   api.modifyAFWebpackOpts((memo, args = {}) => {
-    const { ssr } = args
     const isDev = process.env.NODE_ENV === 'development'
 
     const entryScript = paths.absLibraryJSPath
@@ -161,7 +160,7 @@ export default function(api) {
       },
       define: {
         'process.env.BASE_URL': config.base || '/',
-        __IS_BROWSER: !ssr,
+        __IS_BROWSER: true,
         __UMI_BIGFISH_COMPAT: process.env.BIGFISH_COMPAT,
         __UMI_HTML_SUFFIX: !!(
           config.exportStatic &&
@@ -170,12 +169,11 @@ export default function(api) {
         ),
         ...(config.define || {})
       },
-      publicPath:
-        isDev && !config.ssr
-          ? '/'
-          : config.publicPath != null
-          ? config.publicPath
-          : '/'
+      publicPath: isDev
+        ? '/'
+        : config.publicPath != null
+        ? config.publicPath
+        : '/'
     }
   })
 }

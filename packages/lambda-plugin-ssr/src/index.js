@@ -31,21 +31,37 @@ function normalizePath(path, base = '/') {
 
 export default function(api, opts = {}) {
   const { externalWhitelist } = opts
-  const { service } = api
+  const { service, config } = api
   const isDev = process.env.NODE_ENV === 'development'
 
   // 开启ssr时不设置webpack的optimization.splitChunks
   api.modifyAFWebpackOpts((memo, args) => {
-    const { babel } = memo
+    const { babel, define } = memo
     const entry = isDev ? [] : memo.entry
     const targets = { node: true }
-    console.log(babel)
+
     return {
       ...memo,
       entry,
       targets,
+      babel: Object.assign(babel, {
+        presets: [
+          [
+            require.resolve('babel-preset-umi'),
+            {
+              targets,
+              env: {}
+            }
+          ]
+        ]
+      }),
       disableDynamicImport: !!opts,
-      ssr: opts || true
+      ssr: opts || true,
+      define: {
+        ...define,
+        __IS_BROWSER: false
+      },
+      publicPath: config.publicPath || '/'
     }
   })
 
