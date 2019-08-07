@@ -1,17 +1,10 @@
-import getConfig from 'af-webpack/getConfig'
+import { getConfig } from 'lambda-webpack'
 import assert from 'assert'
-import chalk from 'chalk'
-import { IExportSSROpts } from 'umi-types/config'
-import { IApi, IWebpack } from 'umi-types'
 import nodeExternals from 'webpack-node-externals'
 
-const debug = require('debug')('umi-build-dev:getWebpackConfig')
+const debug = require('debug')('service:getWebpackConfig')
 
-interface IOpts {
-  ssr?: IExportSSROpts
-}
-
-export default function(service: IApi, opts: IOpts = {}) {
+export default function(service, opts = {}) {
   const { ssr } = opts
   const { config } = service
 
@@ -34,28 +27,19 @@ export default function(service: IApi, opts: IOpts = {}) {
     })
     if (config.chainWebpack) {
       config.chainWebpack(webpackConfig, {
-        webpack: require('af-webpack/webpack')
+        webpack: require('lambda-webpack').webpack
       })
     }
   }
 
-  const webpackConfig: IWebpack.Configuration = service.applyPlugins(
-    'modifyWebpackConfig',
-    {
-      initialValue: getConfig({
-        ...afWebpackOpts,
-        ssr
-      })
-    }
-  )
+  const webpackConfig = service.applyPlugins('modifyWebpackConfig', {
+    initialValue: getConfig({
+      ...afWebpackOpts,
+      ssr
+    })
+  })
 
   if (ssr) {
-    // ssr in beta hint
-    console.warn(
-      chalk.keyword('orange')(
-        `WARNING: UmiJS SSR is still in beta, you can open issues or PRs in https://github.com/umijs/umi`
-      )
-    )
     const nodeExternalsOpts = {
       whitelist: [
         /\.(css|less|sass|scss)$/,
