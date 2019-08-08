@@ -28,7 +28,7 @@ export default function(opts = {}) {
       'lambda-plugin-rain',
       {
         dynamicImport: {
-          webpackChunkName: true
+          // webpackChunkName: true
         }
       }
     ]

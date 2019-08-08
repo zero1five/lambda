@@ -73,7 +73,6 @@ export default function(api, opts = true) {
           ]
         ]
       }),
-      disableDynamicImport: !!opts,
       define: {
         ...define,
         __IS_BROWSER: false
