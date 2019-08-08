@@ -118,6 +118,12 @@ export default function(api, opts = {}) {
     }
   })
 
+  // 修改默认配置 ssr options
+  api.modifyDefaultConfig(memo => {
+    memo.ssr = opts
+    return memo
+  })
+
   // ssr时调用app.run | 只初始化不挂载dom
   api.addEntryCodeAhead(`app.router(() => <div />);\napp.run();`)
 
