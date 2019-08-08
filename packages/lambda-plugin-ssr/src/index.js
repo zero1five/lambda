@@ -34,7 +34,9 @@ export default function(api, opts = {}) {
   const { externalWhitelist } = opts
   const { service, config, paths } = api
   const isDev = process.env.NODE_ENV === 'development'
-
+  if (isDev) {
+    return
+  }
   // 开启ssr时不设置webpack的optimization.splitChunks
   api.modifyAFWebpackOpts((memo, args) => {
     const { babel, define } = memo
@@ -91,7 +93,7 @@ export default function(api, opts = {}) {
     }
 
     debug(`nodeExternalOpts:`, nodeExternalsOpts)
-    webpackConfig.externals = nodeExternals(nodeExternalsOpts)
+    // webpackConfig.externals = nodeExternals(nodeExternalsOpts)
     webpackConfig.output.libraryTarget = 'commonjs2'
     webpackConfig.output.filename = '[name].server.js'
     webpackConfig.output.chunkFilename = '[name].server.async.js'
@@ -109,7 +111,7 @@ export default function(api, opts = {}) {
 
   // webpack build onSuccess
   api.onBuildSuccess((memo, args) => {
-    const { stats } = args
+    const { stats } = memo
     // replace using manifest
     // __UMI_SERVER__.js/css => umi.${hash}.js/css
     const clientStat = Array.isArray(stats.stats) ? stats.stats[0] : stats
