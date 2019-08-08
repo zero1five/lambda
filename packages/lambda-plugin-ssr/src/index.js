@@ -93,7 +93,7 @@ export default function(api, opts = {}) {
     }
 
     debug(`nodeExternalOpts:`, nodeExternalsOpts)
-    // webpackConfig.externals = nodeExternals(nodeExternalsOpts)
+    webpackConfig.externals = nodeExternals(nodeExternalsOpts)
     webpackConfig.output.libraryTarget = 'commonjs2'
     webpackConfig.output.filename = '[name].server.js'
     webpackConfig.output.chunkFilename = '[name].server.async.js'

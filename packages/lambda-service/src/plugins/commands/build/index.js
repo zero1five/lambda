@@ -2,7 +2,6 @@ import rimraf from 'rimraf'
 import notify from 'umi-notify'
 import getRouteManager from '../getRouteManager'
 import getFilesGenerator from '../getFilesGenerator'
-// import replaceChunkMaps from '../replaceChunkMaps'
 
 export default function(api) {
   const { service, debug, config, UmiError, printUmiError } = api
@@ -41,7 +40,7 @@ export default function(api) {
             service.webpackConfig.plugins.unshift(new HtmlGeneratorPlugin())
           }
           service._applyPluginsAsync('beforeBuildCompileAsync').then(() => {
-            require('af-webpack/build').default({
+            require('lambda-webpack/lib/build')({
               cwd,
               // before: service.webpackConfig
               // now: [ service.webpackConfig, ... ] , for ssr or more configs
