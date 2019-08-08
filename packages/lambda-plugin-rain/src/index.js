@@ -232,7 +232,8 @@ models: () => [
 
     return {
       ...memo,
-      alias
+      alias,
+      disableDynamicImport: true
     }
   })
 

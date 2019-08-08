@@ -30,13 +30,14 @@ function normalizePath(path, base = '/') {
   return path
 }
 
-export default function(api, opts = {}) {
+export default function(api, opts = true) {
   const { externalWhitelist } = opts
   const { service, config, paths } = api
   const isDev = process.env.NODE_ENV === 'development'
   if (isDev) {
     return
   }
+
   // 开启ssr时不设置webpack的optimization.splitChunks
   api.modifyAFWebpackOpts((memo, args) => {
     const { babel, define } = memo
@@ -81,44 +82,44 @@ export default function(api, opts = {}) {
     }
   })
 
-  // 修改ssr开启时webpack的配置
-  api.modifyWebpackConfig((webpackConfig, args) => {
-    const nodeExternalsOpts = {
-      whitelist: [
-        /\.(css|less|sass|scss)$/,
-        /^umi(\/.*)?$/,
-        'umi-plugin-locale',
-        ...(externalWhitelist || [])
-      ]
-    }
+  // // 修改ssr开启时webpack的配置
+  // api.modifyWebpackConfig((webpackConfig, args) => {
+  //   const nodeExternalsOpts = {
+  //     whitelist: [
+  //       /\.(css|less|sass|scss)$/,
+  //       /^umi(\/.*)?$/,
+  //       'umi-plugin-locale',
+  //       ...(externalWhitelist || [])
+  //     ]
+  //   }
 
-    debug(`nodeExternalOpts:`, nodeExternalsOpts)
-    webpackConfig.externals = nodeExternals(nodeExternalsOpts)
-    webpackConfig.output.libraryTarget = 'commonjs2'
-    webpackConfig.output.filename = '[name].server.js'
-    webpackConfig.output.chunkFilename = '[name].server.async.js'
-    webpackConfig.plugins.push(
-      new (require('write-file-webpack-plugin'))({
-        test: /umi\.server\.js/
-      }),
-      new (require('lambda-service/lib/plugins/commands/getChunkMapPlugin').default(
-        service
-      ))()
-    )
+  //   debug(`nodeExternalOpts:`, nodeExternalsOpts)
+  //   webpackConfig.externals = nodeExternals(nodeExternalsOpts)
+  //   webpackConfig.output.libraryTarget = 'commonjs2'
+  //   webpackConfig.output.filename = '[name].server.js'
+  //   webpackConfig.output.chunkFilename = '[name].server.async.js'
+  //   webpackConfig.plugins.push(
+  //     new (require('write-file-webpack-plugin'))({
+  //       test: /umi\.server\.js/
+  //     }),
+  //     new (require('lambda-service/lib/plugins/commands/getChunkMapPlugin').default(
+  //       service
+  //     ))()
+  //   )
 
-    return webpackConfig
-  })
+  //   return webpackConfig
+  // })
 
-  // webpack build onSuccess
-  api.onBuildSuccess((memo, args) => {
-    const { stats } = memo
-    // replace using manifest
-    // __UMI_SERVER__.js/css => umi.${hash}.js/css
-    const clientStat = Array.isArray(stats.stats) ? stats.stats[0] : stats
-    if (clientStat) {
-      replaceChunkMaps(service, clientStat)
-    }
-  })
+  // // webpack build onSuccess
+  // api.onBuildSuccess((memo, args) => {
+  //   const { stats } = memo
+  //   // replace using manifest
+  //   // __UMI_SERVER__.js/css => umi.${hash}.js/css
+  //   const clientStat = Array.isArray(stats.stats) ? stats.stats[0] : stats
+  //   if (clientStat) {
+  //     replaceChunkMaps(service, clientStat)
+  //   }
+  // })
 
   // 修改默认配置 ssr options
   api.modifyDefaultConfig(memo => {
@@ -193,8 +194,3 @@ export default function(api, opts = {}) {
     return memo
   })
 }
-
-/**
- * 将涵盖ssr的代码抽离到这里
- * 配置ssr wepback的支持
- */
