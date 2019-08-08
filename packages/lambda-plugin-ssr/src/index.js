@@ -96,12 +96,12 @@ export default function(api, opts = {}) {
     webpackConfig.output.filename = '[name].server.js'
     webpackConfig.output.chunkFilename = '[name].server.async.js'
     webpackConfig.plugins.push(
-      new (require('lambda-service/lib/plugins/commands/getChunkMapPlugin').default(
-        service
-      ))(),
       new (require('write-file-webpack-plugin'))({
         test: /umi\.server\.js/
-      })
+      }),
+      new (require('lambda-service/lib/plugins/commands/getChunkMapPlugin').default(
+        service
+      ))()
     )
 
     return webpackConfig
