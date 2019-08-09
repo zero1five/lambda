@@ -99,5 +99,8 @@
     "url": "https://github.com/zero1five/lambda/tree/master/packages/lambda-webpack"
   },
   "author": "zero1five<zerodengyin@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
 }
