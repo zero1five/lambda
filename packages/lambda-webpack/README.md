@@ -6,13 +6,9 @@ English | [简体中文](./README_zh-CN.md)
 
 ## Status
 
-[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
-[![](https://img.shields.io/circleci/project/github/zero1five/lambda-webpack.svg)](https://circleci.com/gh/zero1five/lambda-webpack/tree/master)
 [![](https://img.shields.io/npm/v/lambda-webpack.svg)](https://www.npmjs.com/package/lambda-webpack)
 [![](https://img.shields.io/npm/dm/lambda-webpack.svg)](https://www.npmjs.com/package/lambda-webpack)
 [![](https://img.shields.io/npm/l/lambda-webpack.svg)](https://www.npmjs.com/package/lambda-webpack)
-[![](https://img.shields.io/badge/support%20me-donate-ff00ff.svg)](https://www.patreon.com/zero1five)
-[![](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 
 ## Contributing
 
