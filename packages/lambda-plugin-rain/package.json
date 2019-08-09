@@ -1,13 +1,13 @@
 {
   "name": "lambda-plugin-rain",
-  "version": "0.0.1",
+  "version": "1.0.1",
   "description": "",
   "main": "./lib/index.js",
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@lambda/utils": "^0.0.1",
+    "@lambda/utils": "^1.0.1",
     "globby": "7.1.1",
     "object-assign": "4.1.1",
     "path-to-regexp": "1.7.0",
