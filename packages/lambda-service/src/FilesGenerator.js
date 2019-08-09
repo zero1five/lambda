@@ -6,10 +6,13 @@ import assert from 'assert'
 import chalk from 'chalk'
 import { debounce, uniq } from 'lodash'
 import Mustache from 'mustache'
-import { winPath, findJS, prettierFile } from '@lambda/utils'
 import routesToJSON from './routes/routesToJSON'
 import importsToStr from './importsToStr'
 import { EXT_LIST } from './constants'
+import getHtmlGenerator from './plugins/commands/getHtmlGenerator'
+import htmlToJSX from './htmlToJSX'
+import getRoutePaths from './routes/getRoutePaths'
+import { winPath, findJS, prettierFile } from '@lambda/utils'
 
 const debug = require('debug')('umi:FilesGenerator')
 
@@ -21,6 +24,13 @@ const stripJSONQuote = function(jsonStr) {
     .replace(/\"Routes\": (\"(.+?)\")/g, `"Routes": $2`)
     .replace(/\\r\\n/g, '\r\n')
     .replace(/\\n/g, '\r\n')
+}
+
+function normalizePath(path, base = '/') {
+  if (path.startsWith(base)) {
+    path = path.replace(base, '/')
+  }
+  return path
 }
 
 export const watcherIgnoreRegExp = /(^|[\/\\])(_mock.js$|\..)/
@@ -132,36 +142,40 @@ export default class FilesGenerator {
   generateEntry() {
     const { paths, config } = this.service
 
-    // Generate rain.js
+    // Generate umi.js
     const entryTpl = readFileSync(paths.defaultEntryTplPath, 'utf-8')
     const initialRender = this.service.applyPlugins('modifyEntryRender', {
       initialValue: `
-      window.g_isBrowser = true;
-      let props = {};
-
-      const pathname = location.pathname;
-      const activeRoute = findRoute(require('@tmp/router').routes, pathname);
-      // 在客户端渲染前，执行 getInitialProps 方法
-      // 拿到初始数据
-      if (activeRoute && activeRoute.component && activeRoute.component.getInitialProps) {
-        const initialProps = plugins.apply('modifyInitialProps', {
-          initialValue: {},
-        });
-        props = activeRoute.component.getInitialProps ? await activeRoute.component.getInitialProps({
-          route: activeRoute,
-          isServer: false,
-          ...initialProps,
-        }) : {};
-      }
-      {{ modifyEntryRender }}
-      const rootContainer = plugins.apply('rootContainer', {
-        initialValue: React.createElement(require('./router').default, props),
+  window.g_isBrowser = true;
+  let props = {};
+  // Both support SSR and CSR
+  if (window.g_useSSR) {
+    // 如果开启服务端渲染则客户端组件初始化 props 使用服务端注入的数据
+    props = window.g_initialData;
+  } else {
+    const pathname = location.pathname;
+    const activeRoute = findRoute(require('@tmp/router').routes, pathname);
+    // 在客户端渲染前，执行 getInitialProps 方法
+    // 拿到初始数据
+    if (activeRoute && activeRoute.component && activeRoute.component.getInitialProps) {
+      const initialProps = plugins.apply('modifyInitialProps', {
+        initialValue: {},
       });
-      ReactDOM[window.g_useSSR ? 'hydrate' : 'render'](
-        rootContainer,
-        document.getElementById('${config.mountElementId}'),
-      );
-          `.trim()
+      props = activeRoute.component.getInitialProps ? await activeRoute.component.getInitialProps({
+        route: activeRoute,
+        isServer: false,
+        ...initialProps,
+      }) : {};
+    }
+  }
+  const rootContainer = plugins.apply('rootContainer', {
+    initialValue: React.createElement(require('./router').default, props),
+  });
+  ReactDOM[window.g_useSSR ? 'hydrate' : 'render'](
+    rootContainer,
+    document.getElementById('${config.mountElementId}'),
+  );
+      `.trim()
     })
 
     const moduleBeforeRenderer = this.service
@@ -201,9 +215,42 @@ export default class FilesGenerator {
       `Conflict keys found in [${validKeys.join(', ')}]`
     )
 
-    let htmlTemplateMap = this.service.applyPlugins('modifyHtmlTemplateMap', {
-      initialValue: []
-    })
+    let htmlTemplateMap = []
+    if (config.ssr) {
+      const isProd = process.env.NODE_ENV === 'production'
+      const routePaths = getRoutePaths(this.RoutesManager.routes)
+      htmlTemplateMap = routePaths.map(routePath => {
+        let ssrHtml = '<></>'
+        const hg = getHtmlGenerator(this.service, {
+          chunksMap: {
+            // TODO, for dynamic chunks
+            // placeholder waiting manifest
+            umi: [
+              isProd ? '__UMI_SERVER__.js' : 'umi.js',
+              isProd ? '__UMI_SERVER__.css' : 'umi.css'
+            ]
+          },
+          headScripts: [
+            {
+              content: `
+window.g_useSSR=true;
+window.g_initialData = \${require('${winPath(
+                require.resolve('serialize-javascript')
+              )}')(props)};
+              `.trim()
+            }
+          ]
+        })
+        const content = hg.getMatchedContent(
+          normalizePath(routePath, config.base)
+        )
+        ssrHtml = htmlToJSX(content).replace(
+          `<div id="${config.mountElementId || 'root'}"></div>`,
+          `<div id="${config.mountElementId || 'root'}">{ rootContainer }</div>`
+        )
+        return `'${routePath}': (${ssrHtml}),`
+      })
+    }
 
     const entryContent = Mustache.render(entryTpl, {
       globalVariables: !this.service.config.disableGlobalVariables,
@@ -233,7 +280,7 @@ export default class FilesGenerator {
         })
       ).join('\n'),
       moduleBeforeRenderer,
-      render: initialRender.replace('{{ modifyEntryRender }}', ''),
+      render: initialRender,
       plugins,
       validKeys,
       htmlTemplateMap: htmlTemplateMap.join('\n'),
@@ -249,15 +296,19 @@ export default class FilesGenerator {
   generateHistory() {
     const { paths, config } = this.service
     const tpl = readFileSync(paths.defaultHistoryTplPath, 'utf-8')
-
+    const initialHistory = `
+require('lambda-echo/lib/createHistory').default({
+  basename: window.routerBase,
+})
+    `.trim()
     let history = this.service.applyPlugins('modifyEntryHistory', {
-      initialValue: `
-      require('lambda-echo/lib/createHistory').default({
-        basename: window.routerBase,
-      })
-          `.trim()
+      initialValue: initialHistory
     })
-
+    if (config.ssr) {
+      history = `
+__IS_BROWSER ? ${initialHistory} : require('history').createMemoryHistory()
+      `.trim()
+    }
     const content = Mustache.render(tpl, {
       globalVariables: !this.service.config.disableGlobalVariables,
       history

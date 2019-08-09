@@ -25,8 +25,7 @@ export default function(opts = {}) {
     './plugins/global-css',
     './plugins/404', // 404 must after mock
     './plugins/dynamicImport',
-    'lambda-plugin-rain',
-    'lambda-plugin-ssr'
+    'lambda-plugin-rain'
   ]
 
   const pluginsObj = [

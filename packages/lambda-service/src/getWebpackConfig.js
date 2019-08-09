@@ -1,6 +1,9 @@
 import { getConfig } from 'lambda-webpack'
 import assert from 'assert'
 import chalk from 'chalk'
+import nodeExternals from 'webpack-node-externals'
+
+const debug = require('debug')('getWebpackConfig')
 
 export default function(service, opts = {}) {
   const { ssr } = opts
@@ -55,7 +58,7 @@ export default function(service, opts = {}) {
       ]
     }
     debug(`nodeExternalOpts:`, nodeExternalsOpts)
-    webpackConfig.externals = nodeExternals(nodeExternalsOpts)
+    // webpackConfig.externals = nodeExternals(nodeExternalsOpts)
     webpackConfig.output.libraryTarget = 'commonjs2'
     webpackConfig.output.filename = '[name].server.js'
     webpackConfig.output.chunkFilename = '[name].server.async.js'

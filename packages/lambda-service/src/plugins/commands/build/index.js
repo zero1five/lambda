@@ -2,6 +2,7 @@ import rimraf from 'rimraf'
 import notify from 'umi-notify'
 import getRouteManager from '../getRouteManager'
 import getFilesGenerator from '../getFilesGenerator'
+import replaceChunkMaps from '../replaceChunkMaps'
 
 export default function(api) {
   const { service, debug, config, UmiError, printUmiError } = api

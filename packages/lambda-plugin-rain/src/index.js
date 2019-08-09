@@ -169,6 +169,7 @@ export default function(api, opts = {}) {
     `
 const app = require('@tmp/rain')._onCreate();
 ${api.config.disableGlobalVariables ? '' : `window.g_app = app;`}
+${api.config.ssr ? `app.router(() => <div />);\napp.run();` : ''}
   `.trim()
   )
 }
