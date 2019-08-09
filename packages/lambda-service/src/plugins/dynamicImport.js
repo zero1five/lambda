@@ -1,7 +1,7 @@
 import { join, dirname, basename, extname } from 'path'
 import globby from 'globby'
 import isRoot from 'path-is-root'
-import { chunkName, findJS, endWithSlash } from '@lambda/utils'
+import { chunkName, findJS, endWithSlash } from 'lambda-base-utils'
 
 function isSrcPath(path, api) {
   const { paths, winPath } = api

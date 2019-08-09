@@ -7,7 +7,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@lambda/utils": "^1.0.4",
+    "lambda-base-utils": "^1.0.4",
     "globby": "7.1.1",
     "object-assign": "4.1.1",
     "path-to-regexp": "1.7.0",

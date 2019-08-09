@@ -1,7 +1,7 @@
 import { join, dirname, basename, extname } from 'path'
 import { readFileSync } from 'fs'
 import globby from 'globby'
-import { findJS, optsToArray } from '@lambda/utils'
+import { findJS, optsToArray } from 'lambda-base-utils'
 
 function getModel(cwd, api) {
   const { config, winPath } = api

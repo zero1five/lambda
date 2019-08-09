@@ -12,7 +12,7 @@ import { EXT_LIST } from './constants'
 import getHtmlGenerator from './plugins/commands/getHtmlGenerator'
 import htmlToJSX from './htmlToJSX'
 import getRoutePaths from './routes/getRoutePaths'
-import { winPath, findJS, prettierFile } from '@lambda/utils'
+import { winPath, findJS, prettierFile } from 'lambda-base-utils'
 
 const debug = require('debug')('umi:FilesGenerator')
 
