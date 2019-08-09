@@ -1,6 +1,6 @@
 {
   "name": "lambda-plugin-rain",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "",
   "main": "./lib/index.js",
   "keywords": [],
@@ -8,7 +8,7 @@
   "license": "ISC",
   "dependencies": {
     "globby": "7.1.1",
-    "lambda-base-utils": "^1.0.11",
+    "lambda-base-utils": "^1.0.12",
     "object-assign": "4.1.1",
     "path-to-regexp": "1.7.0",
     "redux-rain": "^2.0.1"

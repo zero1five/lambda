@@ -1,6 +1,6 @@
 {
   "name": "lambda-base-core",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "",
   "main": "./lib/index.js",
   "scripts": {
@@ -9,7 +9,7 @@
   "dependencies": {
     "chalk": "2.4.2",
     "extend2": "1.0.0",
-    "lambda-base-utils": "^1.0.11",
+    "lambda-base-utils": "^1.0.12",
     "marked": "0.6.2",
     "marked-terminal": "3.2.0",
     "os-locale": "^4.0.0",
