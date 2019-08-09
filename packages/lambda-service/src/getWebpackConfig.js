@@ -4,17 +4,17 @@ import assert from 'assert'
 export default function(service, opts = {}) {
   const { config } = service
 
-  const afWebpackOpts = service.applyPlugins('modifyAFWebpackOpts', {
+  const webpackOpts = service.applyPlugins('modifyAFWebpackOpts', {
     initialValue: {
       cwd: service.cwd
     }
   })
 
   assert(
-    !('chainConfig' in afWebpackOpts),
+    !('chainConfig' in webpackOpts),
     `chainConfig should not supplied in modifyAFWebpackOpts`
   )
-  afWebpackOpts.chainConfig = webpackConfig => {
+  webpackOpts.chainConfig = webpackConfig => {
     service.applyPlugins('chainWebpackConfig', {
       args: webpackConfig
     })
@@ -27,7 +27,7 @@ export default function(service, opts = {}) {
 
   const webpackConfig = service.applyPlugins('modifyWebpackConfig', {
     initialValue: getConfig({
-      ...afWebpackOpts
+      ...webpackOpts
     })
   })
 

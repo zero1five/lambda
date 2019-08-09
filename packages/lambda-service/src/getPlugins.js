@@ -24,15 +24,9 @@ export default function(opts = {}) {
     './plugins/global-js',
     './plugins/global-css',
     './plugins/404', // 404 must after mock
-    [
-      'lambda-plugin-rain',
-      {
-        dynamicImport: {
-          webpackChunkName: true
-        }
-      }
-    ]
-    // ['lambda-plugin-ssr', {}]
+    './plugins/dynamicImport',
+    'lambda-plugin-rain',
+    'lambda-plugin-ssr'
   ]
 
   const pluginsObj = [

@@ -30,7 +30,7 @@ function normalizePath(path, base = '/') {
   return path
 }
 
-export default function(api, opts = true) {
+export default function(api, opts = {}) {
   const { externalWhitelist } = opts
   const { service, config, paths } = api
   const isDev = process.env.NODE_ENV === 'development'
@@ -75,9 +75,9 @@ export default function(api, opts = true) {
       }),
       define: {
         ...define,
-        __IS_BROWSER: false
+        __IS_BROWSER: !opts
       },
-      publicPath: config.publicPath || '/'
+      disableDynamicImport: true
     }
   })
 
@@ -120,12 +120,12 @@ export default function(api, opts = true) {
     }
   })
 
-  // Bug: css
+  // Bug： 导致css不输出，初步判断是因为webpack里的ssr配置
   // 修改默认配置 ssr options
-  api.modifyDefaultConfig(memo => {
-    memo.ssr = opts
-    return memo
-  })
+  // api.modifyDefaultConfig(memo => {
+  //   memo.ssr = opts
+  //   return memo
+  // })
 
   // ssr时调用app.run | 只初始化不挂载dom
   api.addEntryCodeAhead(`app.router(() => <div />);\napp.run();`)
