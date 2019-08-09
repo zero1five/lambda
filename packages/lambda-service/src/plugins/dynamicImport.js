@@ -93,7 +93,7 @@ export default function(api) {
       extendStr = `/* webpackChunkName: ^${webpackChunkName}^ */`
     }
     let ret = `
-__IS_BROWSER || window.g_useSSR
+__IS_BROWSER
   ? _rainDynamic({
     <%= MODELS %>
     component: () => import(${extendStr}'${importPath}'),

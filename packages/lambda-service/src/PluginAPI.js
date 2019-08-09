@@ -81,6 +81,7 @@ export default class PluginAPI {
       'modifyRouterRootComponent',
       'modifyHtmlTemplateMap',
       'modifyWebpackConfig',
+      'modifySSRWebpackConfig',
       '_beforeServerWithApp',
       'beforeDevServer',
       '_beforeDevServerAsync',

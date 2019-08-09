@@ -85,6 +85,7 @@ export default function(api) {
   /* eslint-enable import/no-dynamic-require */
 
   api.modifyAFWebpackOpts((memo, args = {}) => {
+    const { ssr } = args
     const isDev = process.env.NODE_ENV === 'development'
 
     const entryScript = paths.absLibraryJSPath
@@ -98,7 +99,9 @@ export default function(api) {
     const entry = isDev
       ? {
           umi: [
-            ...(process.env.HMR === 'none' ? [] : [webpackHotDevClientPath]),
+            ...(process.env.HMR === 'none' || ssr
+              ? []
+              : [webpackHotDevClientPath]),
             ...(setPublicPath ? [setPublicPathFile] : []),
             entryScript
           ]
@@ -107,14 +110,17 @@ export default function(api) {
           umi: [...(setPublicPath ? [setPublicPathFile] : []), entryScript]
         }
 
-    const targets = {
-      chrome: 49,
-      firefox: 64,
-      safari: 10,
-      edge: 13,
-      ios: 10,
-      ...(config.targets || {})
-    }
+    const targets = ssr
+      ? // current running node
+        { node: true }
+      : {
+          chrome: 49,
+          firefox: 64,
+          safari: 10,
+          edge: 13,
+          ios: 10,
+          ...(config.targets || {})
+        }
 
     // Transform targets to browserslist for autoprefixer
     const browserslist =
@@ -148,11 +154,13 @@ export default function(api) {
             require.resolve('babel-preset-umi'),
             {
               targets,
-              env: {
-                useBuiltIns: 'entry',
-                corejs: 2,
-                ...(config.treeShaking ? { modules: false } : {})
-              }
+              env: ssr
+                ? {}
+                : {
+                    useBuiltIns: 'entry',
+                    corejs: 2,
+                    ...(config.treeShaking ? { modules: false } : {})
+                  }
             }
           ]
         ],
@@ -160,7 +168,7 @@ export default function(api) {
       },
       define: {
         'process.env.BASE_URL': config.base || '/',
-        __IS_BROWSER: true,
+        __IS_BROWSER: !ssr,
         __UMI_BIGFISH_COMPAT: process.env.BIGFISH_COMPAT,
         __UMI_HTML_SUFFIX: !!(
           config.exportStatic &&
@@ -169,11 +177,12 @@ export default function(api) {
         ),
         ...(config.define || {})
       },
-      publicPath: isDev
-        ? '/'
-        : config.publicPath != null
-        ? config.publicPath
-        : '/'
+      publicPath:
+        isDev && !config.ssr
+          ? '/'
+          : config.publicPath != null
+          ? config.publicPath
+          : '/'
     }
   })
 }

@@ -38,94 +38,12 @@ export default function(api, opts = {}) {
     return
   }
 
-  // 开启ssr时不设置webpack的optimization.splitChunks
-  api.modifyAFWebpackOpts((memo, args) => {
-    const { babel, define } = memo
-    const entryScript = paths.absLibraryJSPath
-    const setPublicPathFile = join(
-      __dirname,
-      '../../../template/setPublicPath.js'
-    )
-    const setPublicPath =
-      config.runtimePublicPath ||
-      (config.exportStatic && config.exportStatic.dynamicRoot)
-
-    const entry = isDev
-      ? {
-          umi: [...(setPublicPath ? [setPublicPathFile] : []), entryScript]
-        }
-      : memo.entry
-    const targets = { node: true }
-
-    return {
-      ...memo,
-      entry,
-      targets,
-      ssr: opts,
-      babel: Object.assign(babel, {
-        presets: [
-          [
-            require.resolve('babel-preset-umi'),
-            {
-              targets,
-              env: {}
-            }
-          ]
-        ]
-      }),
-      define: {
-        ...define,
-        __IS_BROWSER: false
-      },
-      disableDynamicImport: true
-    }
-  })
-
-  // 修改ssr开启时webpack的配置
-  api.modifyWebpackConfig((webpackConfig, args) => {
-    const nodeExternalsOpts = {
-      whitelist: [
-        /\.(css|less|sass|scss)$/,
-        /^umi(\/.*)?$/,
-        'umi-plugin-locale',
-        ...(externalWhitelist || [])
-      ]
-    }
-
-    debug(`nodeExternalOpts:`, nodeExternalsOpts)
-    webpackConfig.externals = nodeExternals(nodeExternalsOpts)
-    webpackConfig.output.libraryTarget = 'commonjs2'
-    webpackConfig.output.filename = '[name].server.js'
-    webpackConfig.output.chunkFilename = '[name].server.async.js'
-    webpackConfig.plugins.push(
-      new (require('write-file-webpack-plugin'))({
-        test: /umi\.server\.js/
-      }),
-      new (require('lambda-service/lib/plugins/commands/getChunkMapPlugin').default(
-        service
-      ))()
-    )
-
-    return webpackConfig
-  })
-
-  // webpack build onSuccess
-  api.onBuildSuccess((memo, args) => {
-    const { stats } = memo
-    // replace using manifest
-    // __UMI_SERVER__.js/css => umi.${hash}.js/css
-    const clientStat = Array.isArray(stats.stats) ? stats.stats[0] : stats
-    if (clientStat) {
-      replaceChunkMaps(service, clientStat)
-    }
-  })
-
   // Bug： 导致css不输出，初步判断是因为webpack里的ssr配置
   // 修改默认配置 ssr options
-  api.modifyDefaultConfig(memo => {
-    memo.ssr = opts
-    return memo
-  })
+  // api.modifyDefaultConfig(memo => {
+  //   memo.ssr = opts
+  //   return memo
+  // })
 
   // ssr时调用app.run | 只初始化不挂载dom
   api.addEntryCodeAhead(`app.router(() => <div />);\napp.run();`)
