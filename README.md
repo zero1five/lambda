@@ -7,8 +7,8 @@
 ---
 
 <p align="center">
-  <a aria-label="lambda logo" href="https://github.com/lambda">
-    <img src="https://img.shields.io/badge/ZEIT-000000.svg?style=for-the-badge&logo=ZEIT&labelColor=000000&logoWidth=20">
+  <a aria-label="lambda logo" href="https://github.com/zero1five/lambda">
+    <img src="https://img.shields.io/badge/Lambda-000000.svg?style=for-the-badge&logo=zeit&labelColor=000000&logoWidth=20">
   </a>
   <a aria-label="NPM version" href="https://www.npmjs.com/package/lambda-echo">
     <img alt="" src="https://img.shields.io/npm/v/lambda-echo.svg?style=for-the-badge&labelColor=000000">
