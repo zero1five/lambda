@@ -1,16 +1,7 @@
 import { join, dirname, basename, extname } from 'path'
 import { readFileSync } from 'fs'
 import globby from 'globby'
-import isRoot from 'path-is-root'
-import { chunkName, findJS, optsToArray, endWithSlash } from '@lambda/utils'
-
-function isReactComponent(componentStr) {
-  return /^\(.*?\)\s*?=>/.test(componentStr)
-}
-
-function isRelativePath(path) {
-  return /^\.{1,2}\//.test(path)
-}
+import { findJS, optsToArray } from '@lambda/utils'
 
 function getModel(cwd, api) {
   const { config, winPath } = api
@@ -35,44 +26,14 @@ function getModel(cwd, api) {
     .map(p => winPath(join(cwd, p)))
 }
 
-function getPageModels(cwd, api) {
-  let models = []
-  while (!isSrcPath(cwd, api) && !isRoot(cwd)) {
-    models = models.concat(getModel(cwd, api))
-    cwd = dirname(cwd)
-  }
-  return models
-}
-
-function isSrcPath(path, api) {
-  const { paths, winPath } = api
-  return endWithSlash(winPath(path)) === endWithSlash(winPath(paths.absSrcPath))
-}
-
 function getGlobalModels(api) {
   const { paths, routes } = api
   let models = getModel(paths.absSrcPath, api)
   return models
 }
 
-function handleDependencyImport(api, { shouldImportDynamic }) {
-  // let modifyRouterRootComponentValue = `require('dva/router').routerRedux.ConnectedRouter`
-  let addRouterImportValue = shouldImportDynamic
-    ? {
-        source: 'redux-rain/dynamic',
-        specifier: '_rainDynamic'
-      }
-    : null
-
-  if (addRouterImportValue) {
-    api.addRouterImport(addRouterImportValue)
-  }
-  // api.modifyRouterRootComponent(modifyRouterRootComponentValue)
-}
-
 export default function(api, opts = {}) {
   const { paths, cwd, compatDirname, winPath } = api
-  const shouldImportDynamic = opts.dynamicImport
 
   function getRainJS() {
     const rainJS = findJS(paths.absSrcPath, 'redux-rain')
@@ -118,67 +79,6 @@ export default function(api, opts = {}) {
   )
 
   const rainVersion = require(join(rainDir, 'package.json')).version
-
-  handleDependencyImport(api, { shouldImportDynamic })
-
-  if (shouldImportDynamic) {
-    if (opts.level) {
-      process.env.CODE_SPLITTING_LEVEL = opts.level
-    }
-
-    api.modifyRouteComponent((memo, args) => {
-      const { importPath, webpackChunkName } = args
-      if (!webpackChunkName) {
-        return memo
-      }
-
-      let loadingOpts = ''
-      if (opts.dynamicImport.loadingComponent) {
-        loadingOpts = `LoadingComponent: require('${winPath(
-          join(paths.absSrcPath, opts.dynamicImport.loadingComponent)
-        )}').default,`
-      }
-
-      let extendStr = ''
-      if (opts.dynamicImport.webpackChunkName) {
-        extendStr = `/* webpackChunkName: ^${webpackChunkName}^ */`
-      }
-      let ret = `
-  __IS_BROWSER
-    ? _rainDynamic({
-      <%= MODELS %>
-      component: () => import(${extendStr}'${importPath}'),
-      ${loadingOpts}
-    })
-    : require('${importPath}').default
-      `.trim()
-      const models = getPageModels(join(paths.absTmpDirPath, importPath), api)
-      if (models && models.length) {
-        ret = ret.replace(
-          '<%= MODELS %>',
-          `
-app: require('@tmp/dva').getApp(),
-models: () => [
-  ${models
-    .map(
-      model =>
-        `import(${
-          opts.dynamicImport.webpackChunkName
-            ? `/* webpackChunkName: '${chunkName(paths.cwd, model)}' */`
-            : ''
-        }'${model}').then(m => { return { namespace: '${basename(
-          model,
-          extname(model)
-        )}',...m.default}})`
-    )
-    .join(',\r\n  ')}
-],
-      `.trim()
-        )
-      }
-      return ret.replace('<%= MODELS %>', '')
-    })
-  }
 
   function generateInitRain() {
     const tpl = join(__dirname, '../template/rain.js.tpl')

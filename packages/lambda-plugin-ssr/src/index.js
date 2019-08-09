@@ -61,7 +61,7 @@ export default function(api, opts = {}) {
       ...memo,
       entry,
       targets,
-      ssr: opts || true,
+      ssr: opts,
       babel: Object.assign(babel, {
         presets: [
           [
@@ -75,7 +75,7 @@ export default function(api, opts = {}) {
       }),
       define: {
         ...define,
-        __IS_BROWSER: !opts
+        __IS_BROWSER: false
       },
       disableDynamicImport: true
     }
@@ -122,10 +122,10 @@ export default function(api, opts = {}) {
 
   // Bug： 导致css不输出，初步判断是因为webpack里的ssr配置
   // 修改默认配置 ssr options
-  // api.modifyDefaultConfig(memo => {
-  //   memo.ssr = opts
-  //   return memo
-  // })
+  api.modifyDefaultConfig(memo => {
+    memo.ssr = opts
+    return memo
+  })
 
   // ssr时调用app.run | 只初始化不挂载dom
   api.addEntryCodeAhead(`app.router(() => <div />);\napp.run();`)
