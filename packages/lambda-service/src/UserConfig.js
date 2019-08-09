@@ -9,7 +9,7 @@ import getUserConfig, {
   getConfigFile,
   getConfigByConfigFile,
   cleanConfigRequireCache
-} from '@lambda/core/lib/getUserConfig'
+} from 'lambda-base-core/lib/getUserConfig'
 import { watch, unwatch } from './getConfig/watch'
 import isEqual from './isEqual'
 

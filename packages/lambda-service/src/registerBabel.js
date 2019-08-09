@@ -2,7 +2,7 @@ import { join, isAbsolute } from 'path'
 import { existsSync } from 'fs'
 import { registerBabel } from 'lambda-webpack'
 import { winPath } from 'lambda-base-utils'
-import { getConfigPaths } from '@lambda/core/lib/getUserConfig'
+import { getConfigPaths } from 'lambda-base-core/lib/getUserConfig'
 
 let files = null
 
