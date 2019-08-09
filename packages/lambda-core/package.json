@@ -1,15 +1,15 @@
 {
   "name": "@lambda/core",
-  "version": "1.0.4",
+  "version": "1.0.11",
   "description": "",
   "main": "./lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "lambda-base-utils": "^1.0.4",
     "chalk": "2.4.2",
     "extend2": "1.0.0",
+    "lambda-base-utils": "^1.0.11",
     "marked": "0.6.2",
     "marked-terminal": "3.2.0",
     "os-locale": "^4.0.0",
