@@ -1,6 +1,7 @@
 import { extname } from 'path'
 import autoprefixer from 'autoprefixer'
 import normalizeTheme from './normalizeTheme'
+import { IWebpackChainConfig, IFWebpackOpts } from '../../index.d'
 
 const DEFAULT_BROWSERS = [
   '>1%',
@@ -9,9 +10,18 @@ const DEFAULT_BROWSERS = [
   'not ie < 9' // React doesn't support IE8 anyway
 ]
 
-export default function(webpackConfig, opts) {
+interface cssOpts {
+  importLoaders: number
+  sourceMap: IFWebpackOpts['disableCSSSourceMap']
+  localIdentName?: string
+}
+
+export default function(
+  webpackConfig: IWebpackChainConfig,
+  opts: IFWebpackOpts
+) {
   const isDev = process.env.NODE_ENV === 'development'
-  const cssOpts = {
+  const cssOpts: cssOpts = {
     importLoaders: 1,
     sourceMap: !opts.disableCSSSourceMap,
     ...(opts.cssLoaderOptions || {})
