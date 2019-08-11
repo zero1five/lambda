@@ -5,7 +5,9 @@ const { EOL } = require('os')
 const assert = require('assert')
 const { getPkgPath, shouldTransform } = require('./es5ImcompatibleVersions')
 const resolveDefine = require('./resolveDefine')
+
 import { IFWebpackOpts } from '../../index.d'
+import { webpackHotDevClientPath } from '../../react-dev-utils'
 
 function makeArray(item) {
   if (Array.isArray(item)) return item
@@ -20,6 +22,16 @@ module.exports = (opts: IFWebpackOpts) => {
   const webpackConfig = new Config()
 
   webpackConfig.mode('development')
+
+  if (opts.webServer) {
+    webpackConfig.entry('index').add(webpackHotDevClientPath)
+
+    webpackConfig
+      .plugin('web-server')
+      .use(require('html-webpack-plugin'), [
+        typeof opts.webServer === 'object' ? opts.webServer : undefined
+      ])
+  }
 
   // 配置 entry
   if (opts.entry) {

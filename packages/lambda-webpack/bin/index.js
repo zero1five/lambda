@@ -8,7 +8,7 @@ const getUserConfig = require(`${internal}/getUserConfig`)
 
 const cwd = process.cwd()
 const webpackConfig = getWebpackConfig()
-
+console.log(webpackConfig)
 switch (process.argv[2]) {
   case 'dev':
     require(`${internal}/dev`)({

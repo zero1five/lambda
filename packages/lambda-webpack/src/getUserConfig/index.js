@@ -71,12 +71,7 @@ function replaceNpmVariables(value, pkg) {
 }
 
 module.exports = (opts = {}) => {
-  const {
-    cwd = process.cwd(),
-    configFile = '.webpackrc',
-    disabledConfigs = [],
-    preprocessor
-  } = opts
+  const { cwd, configFile, disabledConfigs = [], preprocessor } = opts
 
   const rcFile = resolve(cwd, configFile)
   const jsRCFile = resolve(cwd, `${configFile}.js`)

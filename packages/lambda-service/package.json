@@ -43,7 +43,6 @@
     "lambda-base-utils": "^1.0.12",
     "lambda-echo": "^1.0.12",
     "lambda-plugin-rain": "^1.0.12",
-    "lambda-plugin-ssr": "^1.0.0",
     "lambda-webpack": "^1.0.12",
     "lodash": "4.17.13",
     "mkdirp": "0.5.1",

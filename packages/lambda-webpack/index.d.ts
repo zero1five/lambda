@@ -108,4 +108,6 @@ export interface IFWebpackOpts {
   minimizer?: 'uglifyjs' | 'terserjs'
   // terserJS Options
   terserJSOptions?: object
+  // webServer service
+  webServer?: boolean | object
 }
