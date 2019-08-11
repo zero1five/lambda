@@ -4,6 +4,7 @@ const webpack = require('webpack')
 const assert = require('assert')
 const WebpackDevServer = require('webpack-dev-server')
 const chalk = require('chalk')
+const signale = require('signale')
 import send from './send'
 const { STARTING, DONE } = require('./send')
 const {
@@ -23,6 +24,8 @@ const CERT =
 const KEY =
   process.env.HTTPS && process.env.KEY ? fs.readFileSync(process.env.KEY) : ''
 const noop = () => {}
+
+process.env.CLEAR_CONSOLE = true
 
 function getWebpackConfig(webpackConfig) {
   return Array.isArray(webpackConfig) ? webpackConfig[0] : webpackConfig
@@ -87,9 +90,11 @@ module.exports = ({
           } catch (e) {
             copied = chalk.red(`(copy to clipboard failed)`)
           }
+          clearConsole()
           console.log()
-          console.log(
+          signale.success(
             [
+              `\n`,
               `  App running at:`,
               `  - Local:   ${chalk.cyan(urls.localUrlForTerminal)} ${copied}`,
               `  - Network: ${chalk.cyan(urls.lanUrlForTerminal)}`
@@ -172,7 +177,7 @@ module.exports = ({
         if (isInteractive) {
           clearConsole()
         }
-        console.log(chalk.cyan('Starting the development server...\n'))
+        signale.pending('Starting the development server...\n')
         send({ type: STARTING })
         if (afterServer) {
           afterServer(server, port)
