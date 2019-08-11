@@ -114,4 +114,19 @@ export interface IFWebpackOpts {
   terserJSOptions?: object
   // webServer service
   webServer?: boolean | WebServerOpts
+  // process.env
+  env?: object
+}
+
+export interface UserConfigOpts {
+  // node current work dir
+  cwd?: string
+  // configFile path
+  configFile?: string
+  // disabled configs options
+  disabledConfigs?: string[]
+  // preprocessor
+  preprocessor?: Function
+  // when configuration error set config
+  setConfig?: Function
 }

@@ -8,6 +8,7 @@ const { isPlainObject, isEqual } = require('lodash')
 const { clearConsole } = require('../reactDevUtils')
 const { watch, unwatch } = require('./watch')
 const getPlugins = require('./getPlugins')
+import { IFWebpackOpts, UserConfigOpts } from '../../index.d'
 
 const debug = require('debug')('lambda-webpack:getUserConfig')
 
@@ -70,7 +71,7 @@ function replaceNpmVariables(value, pkg) {
   }
 }
 
-module.exports = (opts = {}) => {
+const getUserConfig = (opts: UserConfigOpts = {}) => {
   const { cwd, configFile, disabledConfigs = [], preprocessor } = opts
 
   const rcFile = resolve(cwd, configFile)
@@ -81,7 +82,7 @@ module.exports = (opts = {}) => {
     `${configFile} file and ${configFile}.js file can not exist at the same time.`
   )
 
-  let config = {}
+  let config: IFWebpackOpts = {}
   if (existsSync(rcFile)) {
     config = JSON.parse(stripJsonComments(readFileSync(rcFile, 'utf-8')))
   }
@@ -89,8 +90,8 @@ module.exports = (opts = {}) => {
     // no cache
     delete require.cache[jsRCFile]
     config = require(jsRCFile)
-    if (config.default) {
-      config = config.default
+    if (config['default']) {
+      config = config['default']
     }
   }
 
@@ -157,10 +158,6 @@ module.exports = (opts = {}) => {
     if (watcher) {
       watcher.on('all', () => {
         try {
-          if (watchOpts.beforeChange) {
-            watchOpts.beforeChange()
-          }
-
           const { config: newConfig } = getUserConfig({
             ...opts,
             setConfig(newConfig) {
@@ -205,7 +202,7 @@ module.exports = (opts = {}) => {
   return { config, watch: watchConfigsAndRun }
 }
 
-exports.watchConfigs = (opts = {}) => {
+const watchConfigs = (opts: UserConfigOpts = {}) => {
   const { cwd = process.cwd(), configFile = '.webpackrc' } = opts
 
   const rcFile = resolve(cwd, configFile)
@@ -214,6 +211,10 @@ exports.watchConfigs = (opts = {}) => {
   return watch(USER_CONFIGS, [rcFile, jsRCFile])
 }
 
-exports.unwatchConfigs = () => {
+const unwatchConfigs = () => {
   unwatch(USER_CONFIGS)
 }
+
+module.exports = getUserConfig
+exports.watchConfigs = watchConfigs
+exports.unwatchConfigs = unwatchConfigs
