@@ -49,7 +49,7 @@ export default function(
       ...(isDev ||
       process.env.CSS_COMPRESS === 'none' ||
       process.env.COMPRESS === 'none' ||
-      process.env.NO_COMPRESS
+      opts.disableCSSCompress
         ? []
         : [
             require('cssnano')({
@@ -165,35 +165,9 @@ export default function(
     })
   }
 
-  if (opts.cssModulesWithAffix) {
-    applyCSSRules(
-      webpackConfig.module.rule('.module.css').test(/\.module\.css$/),
-      {
-        cssModules: true
-      }
-    )
-    applyCSSRules(
-      webpackConfig.module.rule('.module.less').test(/\.module\.less$/),
-      {
-        cssModules: true,
-        less: true
-      }
-    )
-    applyCSSRules(
-      webpackConfig.module.rule('.module.sass').test(/\.module\.(sass|scss)$/),
-      {
-        cssModules: true,
-        sass: true
-      }
-    )
-  }
-
   function cssExclude(filePath) {
     if (/node_modules/.test(filePath)) {
       return true
-    }
-    if (opts.cssModulesWithAffix) {
-      if (/\.module\.(css|less|sass|scss)$/.test(filePath)) return true
     }
     if (opts.cssModulesExcludes) {
       for (const exclude of opts.cssModulesExcludes) {

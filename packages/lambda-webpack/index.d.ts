@@ -15,7 +15,7 @@ type ISSROpts =
     }
   | boolean
 
-type CSSModule = string[] | RegExp[]
+type CSSModuleExcludes = string[] | RegExp[]
 
 type styleLoaderOpts = {
   base?: number
@@ -40,6 +40,8 @@ export interface IFWebpackOpts {
   // compress css presets
   // https://cssnano.co/guides/presets
   cssnano?: object
+  // disable css compress
+  disableCSSCompress?: boolean
   // ssr config
   ssr?: ISSROpts
   // use or not style-loader, when not use ssr
@@ -50,10 +52,8 @@ export interface IFWebpackOpts {
   // https://github.com/sass/node-sass#options
   sass?: object
   // exclude css modules
-  cssModulesExcludes?: CSSModule
-  // css modules prefix
-  cssModulesWithAffix?: boolean
-  // disableCSSModules
+  cssModulesExcludes?: CSSModuleExcludes
+  // disable CSS modules
   disableCSSModules?: boolean
   // file hash suffix
   hash?: boolean
