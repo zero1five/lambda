@@ -1,14 +1,9 @@
-const prefixRE = /^UMI_APP_/
+import { IFWebpackOpts } from '../../index.d'
 
-module.exports = opts => {
+module.exports = (opts: IFWebpackOpts) => {
   const env = {}
   Object.keys(process.env).forEach(key => {
-    if (
-      prefixRE.test(key) ||
-      key === 'NODE_ENV' ||
-      key === 'HMR' ||
-      key === 'SOCKET_SERVER'
-    ) {
+    if (key === 'NODE_ENV' || key === 'HMR' || key === 'SOCKET_SERVER') {
       env[key] = process.env[key]
     }
   })

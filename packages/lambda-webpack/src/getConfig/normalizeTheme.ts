@@ -1,7 +1,8 @@
 import { existsSync } from 'fs'
 import { resolve, isAbsolute } from 'path'
+import { IFWebpackOpts } from '../../index.d'
 
-export default function(theme, opts = {}) {
+export default function(theme, opts: IFWebpackOpts = {}) {
   const { cwd = process.cwd() } = opts
   if (!theme) return {}
   if (typeof theme === 'string') {

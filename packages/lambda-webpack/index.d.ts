@@ -63,4 +63,6 @@ export interface IFWebpackOpts {
   devServer?: IWebpackChainConfig.DevServer
   // node current work dir
   cwd?: string
+  // webpack DefinePlugin
+  define?: object
 }
