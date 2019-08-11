@@ -22,12 +22,16 @@ module.exports = opts => {
 
   // 配置 entry
   if (opts.entry) {
-    for (const key in opts.entry) {
-      // 配置对应的 entry key:value
-      const entry = webpackConfig.entry(key)
-      makeArray(opts.entry[key]).forEach(file => {
-        entry.add(file)
-      })
+    if (typeof opts.entry === 'string') {
+      webpackConfig.entry('index').add(opts.entry)
+    } else {
+      for (const key in opts.entry) {
+        // 配置对应的 entry key:value
+        const entry = webpackConfig.entry(key)
+        makeArray(opts.entry[key]).forEach(file => {
+          entry.add(file)
+        })
+      }
     }
   }
 

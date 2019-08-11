@@ -31,7 +31,7 @@ switch (process.argv[2]) {
 function getWebpackConfig() {
   const { config: userConfig } = getUserConfig({
     cwd,
-    configFile: process.env.CONFIG_FILE || '.webpackrc'
+    configFile: process.env.CONFIG_FILE || 'webpackrc'
   })
   return getConfig({
     entry: {
