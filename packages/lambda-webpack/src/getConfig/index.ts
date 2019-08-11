@@ -281,13 +281,6 @@ module.exports = (opts: IFWebpackOpts) => {
     }
   }
 
-  // 配置 忽略 moment.js locale 文件
-  if (opts.ignoreMomentLocale) {
-    webpackConfig
-      .plugin('ignore-moment-locale')
-      .use(require('webpack/lib/IgnorePlugin'), [/^\.\/locale$/, /moment$/])
-  }
-
   // 配置 ANALYZE-loader
   if (process.env.ANALYZE) {
     webpackConfig

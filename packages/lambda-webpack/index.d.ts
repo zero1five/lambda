@@ -89,6 +89,15 @@ export interface IFWebpackOpts {
   babel?: BabelOpts
   // extra JSX babel include
   extraBabelIncludes?: object[]
-  // ts support
+  // ts config file path
   tsConfigFile?: string
+  // ts-loader options
+  typescript?: object
+  // This option is very needed, why: Touch the file system during the build phase
+  // https://github.com/webpack-contrib/copy-webpack-plugin
+  copy?: object
+  // webpack externals
+  externals?: object
+  // chain to webapck config
+  chainConfig?: Function
 }
