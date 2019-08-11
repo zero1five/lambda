@@ -3,8 +3,9 @@ import UglifyPlugin from 'uglifyjs-webpack-plugin'
 import { isPlainObject } from 'lodash'
 import terserOptions from './terserOptions'
 import uglifyOptions from './uglifyOptions'
+import { IWebpackChainConfig, IFWebpackOpts } from '../../index.d'
 
-function mergeConfig(config, userConfig) {
+function mergeConfig(config: object, userConfig: object) {
   if (typeof userConfig === 'function') {
     return userConfig(config)
   } else if (isPlainObject(userConfig)) {
@@ -17,7 +18,10 @@ function mergeConfig(config, userConfig) {
   }
 }
 
-export default function(webpackConfig, opts) {
+export default function(
+  webpackConfig: IWebpackChainConfig,
+  opts: IFWebpackOpts
+) {
   const disableCompress = process.env.COMPRESS === 'none'
 
   webpackConfig.mode('production').devtool(opts.devtool)

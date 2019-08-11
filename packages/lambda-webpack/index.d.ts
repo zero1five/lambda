@@ -100,4 +100,12 @@ export interface IFWebpackOpts {
   externals?: object
   // chain to webapck config
   chainConfig?: Function
+  // https://github.com/danethurber/webpack-manifest-plugin#api
+  manifest?: object
+  // uglifyJS Options
+  uglifyJSOptions?: object
+  // minimizer
+  minimizer?: 'uglifyjs' | 'terserjs'
+  // terserJS Options
+  terserJSOptions?: object
 }
