@@ -65,4 +65,15 @@ export interface IFWebpackOpts {
   cwd?: string
   // webpack DefinePlugin
   define?: object
+  // webapck entry
+  entry?: string | object
+  // outputPath
+  outputPath?: string
+  // output public path
+  publicPath?: string
+  // webpack alias
+  // https://webpack.js.org/configuration/resolve/#resolvealias
+  alias?: object
+  // 禁用异步分块（按需加载）
+  disableDynamicImport?: boolean
 }

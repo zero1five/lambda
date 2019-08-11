@@ -5,14 +5,15 @@ const { EOL } = require('os')
 const assert = require('assert')
 const { getPkgPath, shouldTransform } = require('./es5ImcompatibleVersions')
 const resolveDefine = require('./resolveDefine')
+import { IFWebpackOpts } from '../../index.d'
 
 function makeArray(item) {
   if (Array.isArray(item)) return item
   return [item]
 }
 
-module.exports = opts => {
-  const { cwd } = opts || {}
+module.exports = (opts: IFWebpackOpts) => {
+  const { cwd = process.cwd() } = opts || {}
   // 通过env变量判断是否是dev模式
   const isDev = process.env.NODE_ENV === 'development'
 
@@ -81,7 +82,7 @@ module.exports = opts => {
     .end()
 
   // TODO: Whether to remove
-  if (!opts.disableDynamicImport && !process.env.__FROM_UMI_TEST) {
+  if (!opts.disableDynamicImport) {
     webpackConfig.optimization
       .splitChunks({
         chunks: 'async',
