@@ -4,7 +4,7 @@ const webpack = require('webpack')
 const assert = require('assert')
 const WebpackDevServer = require('webpack-dev-server')
 const chalk = require('chalk')
-const send = require('./send')
+import send from './send'
 const { STARTING, DONE } = require('./send')
 const {
   prepareUrls,
@@ -177,8 +177,10 @@ module.exports = ({
         if (afterServer) {
           afterServer(server, port)
         }
-        console.log(watch)
-        watch(server)
+
+        if (watch) {
+          watch(server)
+        }
       })
     })
     .catch(err => {

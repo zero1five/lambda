@@ -1,10 +1,10 @@
 const debug = require('debug')('lambda-webpack:send')
 
-exports.DONE = 'DONE'
-exports.STARTING = 'STARTING'
-exports.RESTART = 'RESTART'
+export const DONE = 'DONE'
+export const STARTING = 'STARTING'
+export const RESTART = 'RESTART'
 
-module.exports = function send(message) {
+export default function send(message) {
   if (process.send) {
     debug(`send ${JSON.stringify(message)}`)
     process.send(message)

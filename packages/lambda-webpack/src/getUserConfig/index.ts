@@ -4,6 +4,7 @@ const assert = require('assert')
 const stripJsonComments = require('strip-json-comments')
 const didyoumean = require('didyoumean')
 const chalk = require('chalk')
+const signale = require('signale')
 const { isPlainObject, isEqual } = require('lodash')
 const { clearConsole } = require('../reactDevUtils')
 const { watch, unwatch } = require('./watch')
@@ -43,7 +44,9 @@ function reload() {
 
 function restart(why) {
   clearConsole()
-  console.log(chalk.green(`Since ${why}, try to restart the server`))
+  signale.pending(
+    `Since ${chalk.cyan.underline(why)} changed, try to restart server.`
+  )
   unwatch()
   devServer.close()
   process.send({ type: 'RESTART' })
@@ -179,7 +182,7 @@ const getUserConfig = (opts: UserConfigOpts = {}) => {
                   config[name]
                 )} to ${JSON.stringify(newConfig[name])}`
               )
-              ;(onChange || restart.bind(null, `${name} changed`)).call(null, {
+              ;(onChange || restart.bind(null, `${name}`)).call(null, {
                 name,
                 val: config[name],
                 newVal: newConfig[name],

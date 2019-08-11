@@ -1,3 +1,4 @@
+const cwd = process.cwd()
 const internal = '../lib'
 // 获取默认配置
 const getConfig = require(`${internal}/getConfig`)
