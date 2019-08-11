@@ -61,4 +61,6 @@ export interface IFWebpackOpts {
   devtool?: IWebpackChainConfig.DevTool
   // webpack DevServer
   devServer?: IWebpackChainConfig.DevServer
+  // node current work dir
+  cwd?: string
 }

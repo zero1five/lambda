@@ -1,6 +1,10 @@
 import eslintFormatter from 'react-dev-utils/eslintFormatter'
+import { IWebpackChainConfig, IFWebpackOpts } from '../../index.d'
 
-export default function(webpackConfig, opts) {
+export default function(
+  webpackConfig: IWebpackChainConfig,
+  opts: IFWebpackOpts
+) {
   const eslintOptions = {
     formatter: eslintFormatter,
     baseConfig: {
