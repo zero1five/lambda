@@ -15,6 +15,8 @@ type ISSROpts =
     }
   | boolean
 
+type CSSModule = string[] | RegExp[]
+
 type styleLoaderOpts = {
   base?: number
 }
@@ -48,5 +50,11 @@ export interface IFWebpackOpts {
   // https://github.com/sass/node-sass#options
   sass?: object
   // exclude css modules
-  cssModulesExcludes?: (string | RegExp)[]
+  cssModulesExcludes?: CSSModule
+  // css modules prefix
+  cssModulesWithAffix?: boolean
+  // disableCSSModules
+  disableCSSModules?: boolean
+  // file hash suffix
+  hash?: boolean
 }

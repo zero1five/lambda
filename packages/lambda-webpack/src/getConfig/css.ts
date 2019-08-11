@@ -16,6 +16,12 @@ interface cssOpts {
   localIdentName?: string
 }
 
+interface cssRules {
+  cssModules?: boolean
+  less?: boolean
+  sass?: boolean
+}
+
 export default function(
   webpackConfig: IWebpackChainConfig,
   opts: IFWebpackOpts
@@ -80,7 +86,7 @@ export default function(
     hasSassLoader = false
   }
 
-  function applyCSSRules(rule, { cssModules, less, sass }) {
+  function applyCSSRules(rule, { cssModules, less, sass }: cssRules) {
     if (!opts.ssr) {
       if (opts.styleLoader) {
         rule
