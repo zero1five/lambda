@@ -112,6 +112,7 @@ module.exports = ({
       const serverConfig = {
         disableHostCheck: true,
         compress: true,
+        inline: true,
         clientLogLevel: 'none',
         hot: true,
         quiet: true,

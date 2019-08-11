@@ -112,6 +112,7 @@ module.exports = (opts: IFWebpackOpts) => {
     .add(/\.(js|jsx|ts|tsx|mjs|wasm)$/)
     .add(/\.(graphql|gql)$/)
     .add(/\.(css|less|scss|sass)$/)
+    .add(/\.(ejs|hbs|html)$/)
   if (opts.urlLoaderExcludes) {
     opts.urlLoaderExcludes.forEach(exclude => {
       rule.add(exclude)

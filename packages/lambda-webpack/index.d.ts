@@ -21,6 +21,10 @@ type styleLoaderOpts = {
   base?: number
 }
 
+type WebServerOpts = {
+  template?: string
+}
+
 type BabelOpts = {
   presets?: (string | object)[]
   plugins?: (string | object)[]
@@ -109,5 +113,5 @@ export interface IFWebpackOpts {
   // terserJS Options
   terserJSOptions?: object
   // webServer service
-  webServer?: boolean | object
+  webServer?: boolean | WebServerOpts
 }
