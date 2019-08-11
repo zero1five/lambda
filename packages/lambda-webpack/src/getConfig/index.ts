@@ -122,10 +122,9 @@ module.exports = (opts: IFWebpackOpts) => {
   }
   const babel = opts.babel || {}
   const babelOpts = {
-    presets: [...(babel.presets || []), ...(opts.extraBabelPresets || [])],
+    presets: [...(babel.presets || [])],
     plugins: [
       ...(babel.plugins || []),
-      ...(opts.extraBabelPlugins || []),
       [
         require.resolve('babel-plugin-named-asset-import'),
         {
@@ -193,7 +192,6 @@ module.exports = (opts: IFWebpackOpts) => {
     .loader(require.resolve('babel-loader'))
     .options(babelOpts)
 
-  // TODO: Whether to remove
   // module -> extraBabelIncludes
   const extraBabelIncludes = (opts.extraBabelIncludes || []).concat(a => {
     if (!a.includes('node_modules')) return false

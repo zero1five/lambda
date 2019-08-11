@@ -21,6 +21,11 @@ type styleLoaderOpts = {
   base?: number
 }
 
+type BabelOpts = {
+  presets?: (string | object)[]
+  plugins?: (string | object)[]
+}
+
 export interface IFWebpackOpts {
   // 禁用 CSS 的 SourceMap 生成
   disableCSSSourceMap?: boolean
@@ -76,4 +81,14 @@ export interface IFWebpackOpts {
   alias?: object
   // 禁用异步分块（按需加载）
   disableDynamicImport?: boolean
+  // urlLoaderExcludes
+  urlLoaderExcludes?: object[]
+  // url-loader inlineLimit
+  inlineLimit?: number
+  // babel === babelrc.js
+  babel?: BabelOpts
+  // extra JSX babel include
+  extraBabelIncludes?: object[]
+  // ts support
+  tsConfigFile?: string
 }
