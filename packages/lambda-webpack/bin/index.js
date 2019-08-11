@@ -7,9 +7,13 @@ const getConfig = require(`${internal}/getConfig`)
 const getUserConfig = require(`${internal}/getUserConfig`)
 
 const cwd = process.cwd()
+const mode = process.argv[2]
+process.env.NODE_ENV = mode === 'dev' ? 'development' : 'production'
+
 const webpackConfig = getWebpackConfig()
+
 console.log(webpackConfig)
-switch (process.argv[2]) {
+switch (mode) {
   case 'dev':
     require(`${internal}/dev`)({
       cwd,

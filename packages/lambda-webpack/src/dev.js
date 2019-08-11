@@ -24,8 +24,6 @@ const KEY =
   process.env.HTTPS && process.env.KEY ? fs.readFileSync(process.env.KEY) : ''
 const noop = () => {}
 
-process.env.NODE_ENV = 'development'
-
 function getWebpackConfig(webpackConfig) {
   return Array.isArray(webpackConfig) ? webpackConfig[0] : webpackConfig
 }

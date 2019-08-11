@@ -23,7 +23,7 @@ module.exports = (opts: IFWebpackOpts) => {
 
   webpackConfig.mode('development')
 
-  if (opts.webServer) {
+  if (isDev && opts.webServer) {
     webpackConfig.entry('index').add(webpackHotDevClientPath)
 
     webpackConfig
