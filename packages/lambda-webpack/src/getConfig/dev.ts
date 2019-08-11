@@ -1,4 +1,9 @@
-export default function(webpackConfig, opts) {
+import { IWebpackChainConfig, IFWebpackOpts } from '../../index.d'
+
+export default function(
+  webpackConfig: IWebpackChainConfig,
+  opts: IFWebpackOpts
+) {
   webpackConfig
     .devtool(opts.devtool || 'cheap-module-source-map')
     .output.pathinfo(true)

@@ -57,4 +57,8 @@ export interface IFWebpackOpts {
   disableCSSModules?: boolean
   // file hash suffix
   hash?: boolean
+  // webpack devtool
+  devtool?: IWebpackChainConfig.DevTool
+  // webpack DevServer
+  devServer?: IWebpackChainConfig.DevServer
 }
