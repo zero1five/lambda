@@ -41,6 +41,7 @@ module.exports = ({
   proxy,
   port,
   base,
+  watch,
   https = false,
   serverConfig: serverConfigFromOpts = {}
 }) => {
@@ -176,6 +177,8 @@ module.exports = ({
         if (afterServer) {
           afterServer(server, port)
         }
+        console.log(watch)
+        watch(server)
       })
     })
     .catch(err => {
