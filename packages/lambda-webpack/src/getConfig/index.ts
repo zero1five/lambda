@@ -26,11 +26,12 @@ module.exports = (opts: IFWebpackOpts) => {
   if (isDev && opts.webServer) {
     webpackConfig.entry('index').add(webpackHotDevClientPath)
 
-    webpackConfig
-      .plugin('web-server')
-      .use(require('html-webpack-plugin'), [
-        typeof opts.webServer === 'object' ? opts.webServer : undefined
-      ])
+    webpackConfig.plugin('web-server').use(require('html-webpack-plugin'), [
+      {
+        template: require.resolve('./template/index.hbs'),
+        ...(typeof opts.webServer === 'object' ? opts.webServer : {})
+      }
+    ])
   }
 
   // 配置 entry
@@ -203,6 +204,17 @@ module.exports = (opts: IFWebpackOpts) => {
     .use('babel-loader')
     .loader(require.resolve('babel-loader'))
     .options(babelOpts)
+
+  // 解析 .hbs
+  webpackConfig.module
+    .rule('hbs')
+    .test(/\.hbs$/)
+    .include.add(opts.cwd)
+    .end()
+    .exclude.add(/node_modules/)
+    .end()
+    .use('handlebars-loader')
+    .loader(require.resolve('handlebars-loader'))
 
   // module -> extraBabelIncludes
   const extraBabelIncludes = (opts.extraBabelIncludes || []).concat(a => {

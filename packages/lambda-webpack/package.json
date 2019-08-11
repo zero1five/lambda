@@ -53,6 +53,8 @@
     "friendly-errors-webpack-plugin": "1.7.0",
     "graphql": "14.3.1",
     "graphql-tag": "2.10.1",
+    "handlebars-loader": "^1.7.1",
+    "html-webpack-plugin": "^4.0.0-beta.8",
     "inquirer": "6.3.1",
     "is-plain-object": "3.0.0",
     "is-root": "2.1.0",
@@ -92,8 +94,7 @@
     "webpack-dev-server": "3.2.1",
     "webpack-manifest-plugin": "2.0.4",
     "webpack-merge": "4.2.1",
-    "webpackbar": "3.2.0",
-    "html-webpack-plugin": "^4.0.0-beta.8"
+    "webpackbar": "3.2.0"
   },
   "repository": {
     "type": "git",

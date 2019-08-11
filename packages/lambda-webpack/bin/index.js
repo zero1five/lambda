@@ -12,7 +12,6 @@ process.env.NODE_ENV = mode === 'dev' ? 'development' : 'production'
 
 const webpackConfig = getWebpackConfig()
 
-console.log(webpackConfig)
 switch (mode) {
   case 'dev':
     require(`${internal}/dev`)({
