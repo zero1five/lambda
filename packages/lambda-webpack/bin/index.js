@@ -12,7 +12,7 @@ switch (mode) {
   case 'build':
     require(`../lib/build`)({
       cwd,
-      webpackConfig: getWebpackConfig()
+      webpackConfig: getWebpackConfig()[0]
     })
     break
   default:
