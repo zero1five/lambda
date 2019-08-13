@@ -139,6 +139,7 @@ module.exports = (opts: IFWebpackOpts) => {
     presets: [...(babel.presets || [])],
     plugins: [
       ...(babel.plugins || []),
+      require.resolve('@babel/plugin-syntax-dynamic-import'),
       [
         require.resolve('babel-plugin-named-asset-import'),
         {
@@ -153,13 +154,6 @@ module.exports = (opts: IFWebpackOpts) => {
       ]
     ],
     ...babelOptsCommon
-  }
-
-  if (opts.disableDynamicImport) {
-    babelOpts.plugins = [
-      ...(babelOpts.plugins || []),
-      require.resolve('babel-plugin-dynamic-import-node')
-    ]
   }
 
   // TODO: Whether to remove
