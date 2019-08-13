@@ -94,7 +94,6 @@ module.exports = (opts: IFWebpackOpts) => {
     .add(join(__dirname, '../../node_modules'))
     .end()
 
-  // TODO: Whether to remove
   if (!opts.disableDynamicImport) {
     webpackConfig.optimization
       .splitChunks({
@@ -139,7 +138,6 @@ module.exports = (opts: IFWebpackOpts) => {
     presets: [...(babel.presets || [])],
     plugins: [
       ...(babel.plugins || []),
-      require.resolve('@babel/plugin-syntax-dynamic-import'),
       [
         require.resolve('babel-plugin-named-asset-import'),
         {
@@ -159,6 +157,14 @@ module.exports = (opts: IFWebpackOpts) => {
   // TODO: Whether to remove
   if (process.env.ESLINT && process.env.ESLINT !== 'none') {
     require('./eslint').default(webpackConfig, opts)
+  }
+
+  // 如果 disableDynamicImport: true, 不compile improt() syntax
+  if (!opts.disableDynamicImport) {
+    babelOpts.plugins = [
+      ...(babelOpts.plugins || []),
+      require.resolve('@babel/plugin-syntax-dynamic-import')
+    ]
   }
 
   // Avoid "require is not defined" errors
