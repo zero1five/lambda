@@ -97,6 +97,9 @@
     "webpack-merge": "4.2.1",
     "webpackbar": "3.2.0"
   },
+  "devDependencies": {
+    "@types/lodash": "^4.14.136"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/zero1five/lambda/tree/master/packages/lambda-webpack"
