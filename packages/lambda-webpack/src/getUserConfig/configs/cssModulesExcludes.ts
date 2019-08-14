@@ -1,10 +1,11 @@
 import assert from 'assert'
 import { extname } from 'path'
+import { IFWebpackOpts } from '../../..'
 
 export default function() {
   return {
     name: 'cssModulesExcludes',
-    validate(val) {
+    validate(val: IFWebpackOpts['cssModulesExcludes']) {
       assert(
         Array.isArray(val),
         `The cssModulesExcludes config must be Array, but got ${val}`

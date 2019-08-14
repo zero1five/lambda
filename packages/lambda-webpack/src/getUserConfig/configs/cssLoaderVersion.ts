@@ -1,9 +1,10 @@
 import assert from 'assert'
+import { IFWebpackOpts } from '../../..'
 
 export default function() {
   return {
     name: 'cssLoaderVersion',
-    validate(val) {
+    validate(val: IFWebpackOpts['cssLoaderVersion']) {
       assert(
         typeof val === 'number',
         `The cssLoaderVersion config must be Number, but got ${val}`
