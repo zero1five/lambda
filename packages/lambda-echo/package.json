@@ -23,7 +23,7 @@
     "signale": "1.4.0",
     "umi-utils": "1.5.4",
     "update-notifier": "3.0.0",
-    "yargs-parser": "13.1.1"
+    "yargs-parser": "13.1.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
