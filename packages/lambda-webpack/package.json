@@ -65,7 +65,7 @@
     "mini-css-extract-plugin": "0.7.0",
     "null-loader": "^3.0.0",
     "pkg-up": "3.1.0",
-    "postcss": "7.0.17",
+    "postcss": "7.0.36",
     "postcss-flexbugs-fixes": "4.1.0",
     "postcss-loader": "3.0.0",
     "progress-bar-webpack-plugin": "1.12.1",
